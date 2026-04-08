@@ -1,0 +1,46 @@
+{
+  "feat_cols": [
+    "culmino_estudio",
+    "genero",
+    "horas_semanales",
+    "ingreso_primer_empleo",
+    "categoria_ocupacional",
+    "tipo_contrato",
+    "sector_laboral",
+    "tamanio_empresa",
+    "ocupacion_cod",
+    "actividad_economica_cod",
+    "titulado",
+    "cuadro_merito",
+    "postgrado",
+    "idioma_extranjero",
+    "practicas_preprof",
+    "gestion_universidad",
+    "departamento_id",
+    "carrera_id"
+  ],
+  "cat_cols": [
+    "culmino_estudio",
+    "genero",
+    "ingreso_primer_empleo",
+    "categoria_ocupacional",
+    "tipo_contrato",
+    "sector_laboral",
+    "tamanio_empresa",
+    "ocupacion_cod",
+    "actividad_economica_cod",
+    "titulado",
+    "cuadro_merito",
+    "postgrado",
+    "idioma_extranjero",
+    "practicas_preprof",
+    "gestion_universidad",
+    "departamento_id",
+    "carrera_id"
+  ],
+  "target_log": true,
+  "metrics": {
+    "mae": 585.1458662139343,
+    "r2": 0.4134688613454467
+  }
+}

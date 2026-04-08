@@ -30,6 +30,3 @@ Thumbs.db
 
 # CatBoost (logs locales al entrenar / exportar)
 catboost_info/
-
-# Modelo binario (generar localmente; el JSON sí puede versionarse)
-artifacts/*.cbm
