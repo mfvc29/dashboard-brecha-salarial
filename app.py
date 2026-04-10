@@ -814,6 +814,45 @@ def main():
                 _plotly_base_layout(fig_t, "Brecha por tamaño de empresa")
                 st.plotly_chart(fig_t, use_container_width=True)
 
+        st.divider()
+        st.subheader("Carreras mejor pagadas por género")
+        st.caption("Top 10 de carreras (códigos ID) con los mejores ingresos promedio en la muestra actual.")
+        if not dff.empty and "carrera_id" in dff.columns:
+            c_counts = dff["carrera_id"].value_counts()
+            valid_carreras = c_counts[c_counts >= 10].index
+            if len(valid_carreras) < 3:
+                valid_carreras = c_counts[c_counts >= 3].index
+                
+            df_carreras = dff[dff["carrera_id"].isin(valid_carreras)]
+            if not df_carreras.empty:
+                top_carreras = df_carreras.groupby("carrera_id")["ingreso_mensual"].mean().nlargest(10).index
+                df_top = df_carreras[df_carreras["carrera_id"].isin(top_carreras)].copy()
+                
+                df_top_group = df_top.groupby(["carrera_id", "genero_label"])["ingreso_mensual"].mean().reset_index()
+                mean_order = df_top.groupby("carrera_id")["ingreso_mensual"].mean().sort_values(ascending=False).index
+                df_top_group["carrera_str"] = df_top_group["carrera_id"].apply(lambda x: f"Cód {int(x)}")
+                
+                fig_c = px.bar(
+                    df_top_group,
+                    x="carrera_str",
+                    y="ingreso_mensual",
+                    color="genero_label",
+                    barmode="group",
+                    labels={
+                        "ingreso_mensual": "Ingreso promedio (S/)", 
+                        "carrera_str": "Carrera (ID)",
+                        "genero_label": "Género"
+                    },
+                    color_discrete_map=COLOR_GENERO,
+                    category_orders={"carrera_str": [f"Cód {int(x)}" for x in mean_order]}
+                )
+                fig_c.update_layout(xaxis_title="Código de Carrera", yaxis_title="Ingreso Mensual Promedio (S/)")
+                fig_c.update_yaxes(tickformat=f".{ND}f")
+                _plotly_base_layout(fig_c, "Top 10 Carreras Mejor Pagadas")
+                st.plotly_chart(fig_c, use_container_width=True)
+            else:
+                st.warning("No hay suficientes datos por carrera para calcular el top de ingresos.")
+
     with tab4:
         st.markdown(
             f'<p style="color:{C["texto"]};">Predicción con <strong>CatBoost</strong> ya entrenado '
