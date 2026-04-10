@@ -1236,10 +1236,7 @@ def main():
         st.markdown(
             "Navega libremente por nuestros flujos de diseño interactivos para experimentar el modelo de Ayni Warmi:"
         )
-        st.markdown(
-            """<iframe style="border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 8px;" width="100%" height="600" src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Fmake%2FY6keHcSTgEMFADPkSKa3oq%2FAyni-Warmi-platform-design%3Fp%3Df%26t%3DCZfardXgARrCwqub-0" allowfullscreen></iframe>""", 
-            unsafe_allow_html=True
-        )
+        st.link_button("Abrir Prototipo Interactivo en Figma 🎨", "https://www.figma.com/make/Y6keHcSTgEMFADPkSKa3oq/Ayni-Warmi-platform-design?p=f&t=CZfardXgARrCwqub-0", type="primary")
 
 if __name__ == "__main__":
     main()
