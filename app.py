@@ -618,11 +618,12 @@ def main():
             unsafe_allow_html=True,
         )
 
-    tab1, tab2, tab3, tab4 = st.tabs([
+    tab1, tab2, tab3, tab4, tab5 = st.tabs([
         "Visión General y Narrativa",
         "Distribución y comparación",
         "Brecha por dimensiones",
         "Predicción (ML)",
+        "Solución Estratégica",
     ])
 
     with tab1:
@@ -1205,6 +1206,40 @@ def main():
                     f"(asociación aprendida por el modelo, no efecto causal)."
                 )
 
+    with tab5:
+        st.header("Propuesta de Solución: Plataforma Ayni Warmi")
+        
+        st.markdown(
+            f"""
+            <p style="color:{C["texto"]}; font-size: 1.1rem; line-height: 1.6;">
+            En base a los hallazgos de este dashboard, queda claro que la brecha salarial no es solo una métrica, sino el reflejo de barreras sistémicas. Como solución accionable e integral, presentamos <strong>Ayni Warmi</strong>, una plataforma digital diseñada estratégicamente para la inserción y el empoderamiento laboral de las mujeres en el Perú.
+            </p>
+            """,
+            unsafe_allow_html=True
+        )
+        
+        st.subheader("¿Por qué Ayni Warmi?")
+        st.markdown(
+            f"""
+            Inspirada en el concepto andino del *ayni* (colaboración y ayuda mutua), la aplicación mitiga directamente los problemas que los datos nos han revelado. 
+            
+            *   🤝 **Networking y Referencias:** La data evidencia que la equidad en años de educación no cierra la brecha salarial si el acceso a redes ejecutivas es desigual. Ayni Warmi genera una red de apoyo directo e intercambio para abrir puertas usualmente cerradas.
+            *   🎯 **Empleabilidad Consciente:** Al conectar talento femenino con empresas que aplican reclutamiento inclusivo, se eliminan los sesgos de reclutamiento (el modelo ML demuestra cómo el simple cambio de género impacta significativamente en el sueldo ofrecido).
+            *   📚 **Especialización y Mentoría:** Las cifras muestran que la formación continua y los postgrados son escalones críticos para igualar la remuneración promedio en rangos altos. La plataforma incentiva, guía y premia el crecimiento continuo de habilidades.
+            """
+        )
+        
+        st.warning("💡 **Recomendación basada en datos:** Para escalar económicamente de forma equitativa, la evidencia sugiere que profesionalizarse con un título, participar activamente del networking sectorial y buscar mentoría tecnológica genera saltos cualitativos muy fuertes en ingresos, que *Ayni Warmi* facilitaría digitalmente.")
+
+        st.divider()
+        st.subheader("Prototipo Interactivo")
+        st.markdown(
+            "Navega libremente por nuestros flujos de diseño interactivos para experimentar el modelo de Ayni Warmi:"
+        )
+        st.markdown(
+            """<iframe style="border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 8px;" width="100%" height="600" src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Fmake%2FY6keHcSTgEMFADPkSKa3oq%2FAyni-Warmi-platform-design%3Fp%3Df%26t%3DCZfardXgARrCwqub-0" allowfullscreen></iframe>""", 
+            unsafe_allow_html=True
+        )
 
 if __name__ == "__main__":
     main()
