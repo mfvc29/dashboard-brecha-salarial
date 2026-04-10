@@ -531,10 +531,10 @@ def main():
             "Escuela de Ingeniería Estadística"
         )
         st.markdown(
-            "- [Victoria La Rosa](mailto:victoria.larosa.a@uni.pe)\n"
-            "- [Valeria Linares](mailto:valeria.linares.r@uni.pe)\n"
-            "- [William Ramirez](mailto:william.ramirez.c@uni.pe)\n"
-            "- [Martin Vargas](mailto:mvargasch@uni.pe)"
+            "- [Victoria La Rosa](https://www.linkedin.com/in/lindsay-la-rosa-126535280/) | [📧](mailto:victoria.larosa.a@uni.pe)\n"
+            "- [Valeria Linares](https://www.linkedin.com/in/valeria-linares-rodriguez-1bbba5279/) | [📧](mailto:valeria.linares.r@uni.pe)\n"
+            "- [William Ramirez](https://www.linkedin.com/in/wramirezcc/) | [📧](mailto:william.ramirez.c@uni.pe)\n"
+            "- [Martin Vargas](https://www.linkedin.com/in/mvargasch) | [📧](mailto:mvargasch@uni.pe)"
         )
 
     dff = df.copy()
