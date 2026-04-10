@@ -172,6 +172,14 @@ def load_sector_laboral_map() -> dict[int, str]:
 def load_tamanio_empresa_map() -> dict[int, str]:
     return _read_codigo_etiqueta_map("tamanio_empresa_map.csv")
 
+@st.cache_data(show_spinner=False)
+def load_carrera_map() -> dict[int, str]:
+    p = BASE / "maps" / "carrera_map.csv"
+    if not p.is_file():
+        return {}
+    t = pd.read_csv(p)
+    return {int(r["carrera_id"]): str(r["carrera"]).strip() for _, r in t.iterrows() if pd.notna(r.get("carrera_id")) and pd.notna(r.get("carrera"))}
+
 
 def _etiqueta_codigo(m: dict[int, str], valor) -> str:
     try:
@@ -816,7 +824,8 @@ def main():
 
         st.divider()
         st.subheader("Carreras mejor pagadas por género")
-        st.caption("Top 10 de carreras (códigos ID) con los mejores ingresos promedio en la muestra actual.")
+        st.caption("Top 10 de carreras con los mejores ingresos promedio en la muestra actual.")
+        map_carreras = load_carrera_map()
         if not dff.empty and "carrera_id" in dff.columns:
             c_counts = dff["carrera_id"].value_counts()
             valid_carreras = c_counts[c_counts >= 10].index
@@ -830,7 +839,10 @@ def main():
                 
                 df_top_group = df_top.groupby(["carrera_id", "genero_label"])["ingreso_mensual"].mean().reset_index()
                 mean_order = df_top.groupby("carrera_id")["ingreso_mensual"].mean().sort_values(ascending=False).index
-                df_top_group["carrera_str"] = df_top_group["carrera_id"].apply(lambda x: f"Cód {int(x)}")
+                def _fmt_carrera(x):
+                    return str(map_carreras.get(int(x), f"Cód {int(x)}")).title()
+                    
+                df_top_group["carrera_str"] = df_top_group["carrera_id"].apply(_fmt_carrera)
                 
                 fig_c = px.bar(
                     df_top_group,
@@ -840,13 +852,13 @@ def main():
                     barmode="group",
                     labels={
                         "ingreso_mensual": "Ingreso promedio (S/)", 
-                        "carrera_str": "Carrera (ID)",
+                        "carrera_str": "Carrera",
                         "genero_label": "Género"
                     },
                     color_discrete_map=COLOR_GENERO,
-                    category_orders={"carrera_str": [f"Cód {int(x)}" for x in mean_order]}
+                    category_orders={"carrera_str": [_fmt_carrera(x) for x in mean_order]}
                 )
-                fig_c.update_layout(xaxis_title="Código de Carrera", yaxis_title="Ingreso Mensual Promedio (S/)")
+                fig_c.update_layout(xaxis_title="Carrera", yaxis_title="Ingreso Mensual Promedio (S/)")
                 fig_c.update_yaxes(tickformat=f".{ND}f")
                 _plotly_base_layout(fig_c, "Top 10 Carreras Mejor Pagadas")
                 st.plotly_chart(fig_c, use_container_width=True)
