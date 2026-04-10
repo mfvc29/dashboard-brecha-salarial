@@ -483,6 +483,11 @@ def main():
         "(codificación INEI: 1 Masculino, 2 Femenino)."
     )
     with st.expander("Qué datos se usan en el panel", expanded=False):
+        st.markdown(
+            "**Fuente:** [ENCUESTA DE EGRESADOS UNIVERSITARIOS y universidades 2014]"
+            "(https://proyectos.inei.gob.pe/microdatos/) - INEI."
+        )
+        st.divider()
         _render_variable_glossary()
 
     df = load_data()
@@ -772,7 +777,7 @@ def main():
             bd = agregar_brecha_por_grupo(dff, "departamento", min_n=25)
             y_dep = "departamento"
         if bd.empty:
-            st.warning("No hay suficientes observaciones por género en los grupos; afloja filtros.")
+            st.warning("No hay suficientes observaciones por género en los grupos; actualiza los filtros.")
         else:
             bd_plot = bd.head(20).sort_values("brecha_pct", ascending=True)
             fig_d = px.bar(
