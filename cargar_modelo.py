@@ -1,7 +1,4 @@
-"""
-Solo inferencia: carga el CatBoost ya entrenado desde disco + metadatos.
-No entrena ni modifica el modelo; `modelo.py` no se importa aquí.
-"""
+
 
 from __future__ import annotations
 
