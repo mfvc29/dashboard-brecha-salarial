@@ -1,8 +1,3 @@
-"""
-Dashboard — Brecha salarial entre géneros (datathon).
-Datos: egresados universitarios (df_final.csv).
-"""
-
 from __future__ import annotations
 
 from pathlib import Path
@@ -527,6 +522,20 @@ def main():
         st.markdown("**Dataset**")
         st.text(f"Filas: {len(df):,}")
         st.text(f"Columnas: {df.shape[1]}")
+        
+        st.divider()
+        st.markdown("**Autores**")
+        st.caption(
+            "**Universidad Nacional de Ingeniería**  \n"
+            "Facultad de Ingeniería Económica, Estadística y Ciencias Sociales  \n"
+            "Escuela de Ingeniería Estadística"
+        )
+        st.markdown(
+            "- [Victoria La Rosa](mailto:victoria.larosa.a@uni.pe)\n"
+            "- [Valeria Linares](mailto:valeria.linares.r@uni.pe)\n"
+            "- [William Ramirez](mailto:william.ramirez.c@uni.pe)\n"
+            "- [Martin Vargas](mailto:mvargasch@uni.pe)"
+        )
 
     dff = df.copy()
     dep_filt = _columna_filtro_departamento(dff)
