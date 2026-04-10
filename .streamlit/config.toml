@@ -6,8 +6,8 @@ gatherUsageStats = false
 
 [theme]
 # Paleta principal — Streamlit (sidebar, botones primarios)
-primaryColor = "#2E86AB"
+primaryColor = "#0A0F3C"
 backgroundColor = "#F5F5F5"
 secondaryBackgroundColor = "#FFFFFF"
-textColor = "#333333"
+textColor = "#000000"
 font = "sans serif"

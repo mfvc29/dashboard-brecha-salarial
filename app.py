@@ -13,21 +13,21 @@ from cargar_modelo import intentar_cargar_modelo
 BASE = Path(__file__).resolve().parent
 CSV_PATH = BASE / "df_final.csv"
 
-# --- Paleta de diseño (datathon) ---
+# --- Paleta de diseño (actualizada) ---
 C = {
-    "primario_m": "#2E86AB",
-    "secundario_f": "#F18F01",
-    "brecha": "#C73E1D",
-    "neutro_oscuro": "#2F2F2F",
+    "primario_m": "#0A0F3C",      # Azul oscuro
+    "secundario_f": "#CBB6E6",    # Morado suave
+    "brecha": "#6C3FD1",          # Morado fuerte (accent)
+    "neutro_oscuro": "#0A0F3C",   # Azul oscuro (headers)
     "neutro_claro": "#F5F5F5",
-    "blanco": "#FFFFFF",
-    "borde": "#E0E0E0",
-    "borde_input": "#CCCCCC",
+    "blanco": "#FFFFFF",          # Blanco
+    "borde": "#BDBDBD",           # Gris claro
+    "borde_input": "#BDBDBD",     # Gris claro
     "hover": "#EAEAEA",
     "grid": "#EAEAEA",
-    "subtitulo": "#555555",
-    "texto": "#333333",
-    "nota": "#777777",
+    "subtitulo": "#5A5A5A",       # Gris oscuro
+    "texto": "#000000",           # Negro
+    "nota": "#7A7A7A",            # Gris medio
 }
 
 GENERO_MAP = {1.0: "Masculino", 2.0: "Femenino"}
@@ -166,6 +166,14 @@ def load_sector_laboral_map() -> dict[int, str]:
 @st.cache_data(show_spinner=False)
 def load_tamanio_empresa_map() -> dict[int, str]:
     return _read_codigo_etiqueta_map("tamanio_empresa_map.csv")
+
+@st.cache_data(show_spinner=False)
+def load_ocupacion_map() -> dict[int, str]:
+    return _read_codigo_etiqueta_map("ocupacion_map.csv")
+
+@st.cache_data(show_spinner=False)
+def load_actividad_economica_map() -> dict[int, str]:
+    return _read_codigo_etiqueta_map("actividad_economica_map.csv")
 
 @st.cache_data(show_spinner=False)
 def load_carrera_map() -> dict[int, str]:
@@ -769,7 +777,7 @@ def main():
                 color="brecha_pct",
                 color_continuous_scale=[
                     [0.0, C["neutro_claro"]],
-                    [0.5, "#E8A598"],
+                    [0.5, "#CBB6E6"],
                     [1.0, C["brecha"]],
                 ],
             )
@@ -1081,23 +1089,25 @@ def main():
                     format_func=lambda k: MAP_GEST_UNIV.get(k, f"Opción {int(k)}"),
                     help=_var_help("gestion_universidad"),
                 )
+                map_oc = load_ocupacion_map()
                 opts_oc = _get_opciones(df, "ocupacion_cod")
                 def_oc = float(_df_int_default(df, "ocupacion_cod", opts_oc[0] if opts_oc else 0))
                 ocup_cod = st.selectbox(
                     "Ocupación principal",
                     options=opts_oc,
                     index=opts_oc.index(def_oc) if def_oc in opts_oc else 0,
-                    format_func=lambda k: f"Ocupación (Cód: {int(k)})",
+                    format_func=lambda k: str(map_oc.get(int(k), f"Cód {int(k)}")).title(),
                     help=_var_help("ocupacion_cod"),
                 )
                 
+                map_act = load_actividad_economica_map()
                 opts_act = _get_opciones(df, "actividad_economica_cod")
                 def_act = float(_df_int_default(df, "actividad_economica_cod", opts_act[0] if opts_act else 0))
                 act_cod = st.selectbox(
                     "Actividad económica",
                     options=opts_act,
                     index=opts_act.index(def_act) if def_act in opts_act else 0,
-                    format_func=lambda k: f"Actividad (Cód: {int(k)})",
+                    format_func=lambda k: str(map_act.get(int(k), f"Cód {int(k)}")).title(),
                     help=_var_help("actividad_economica_cod"),
                 )
                 
