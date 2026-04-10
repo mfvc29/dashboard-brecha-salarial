@@ -753,7 +753,7 @@ def main():
 
     with tab3:
         st.subheader("Brecha por departamento")
-        st.caption("Departamento de residencia (nombre oficial).")
+        st.caption("Departamento de residencia.")
         dmap_plot = load_departamento_id_to_nombre()
         if "departamento_id" in dff.columns:
             bd = agregar_brecha_por_grupo(dff, "departamento_id", min_n=25)
@@ -797,10 +797,7 @@ def main():
         map_tam = load_tamanio_empresa_map()
         with c21:
             st.subheader("Por sector laboral")
-            st.caption(
-                "Etiquetas legibles desde `maps/sector_laboral_map.csv`. "
-                "Si no coinciden con tu manual de encuesta, edita ese archivo (el modelo sigue usando 1–5)."
-            )
+
             bs = agregar_brecha_por_grupo(dff, "sector_laboral", min_n=40)
             if not bs.empty:
                 bs_plot = bs.sort_values("brecha_pct", ascending=False).head(12).copy()
@@ -820,10 +817,7 @@ def main():
                 st.plotly_chart(fig_s, use_container_width=True)
         with c22:
             st.subheader("Por tamaño de empresa")
-            st.caption(
-                "Etiquetas legibles desde `maps/tamanio_empresa_map.csv`. "
-                "Ajusta el CSV si tu cuestionario define otra leyenda (los datos siguen siendo 1–5)."
-            )
+
             bt = agregar_brecha_por_grupo(dff, "tamanio_empresa", min_n=40)
             if not bt.empty:
                 bt_plot = bt.sort_values("brecha_pct", ascending=False).copy()
