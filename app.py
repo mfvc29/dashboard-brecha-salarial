@@ -1151,10 +1151,6 @@ def main():
                 Xp = _prepare_features_for_catboost(row, feat_cols)
                 pred = _decode_pred(float(pipe.predict(Xp)[0]))
                 st.success(f"**Ingreso mensual estimado:** {_fmt_soles(pred)}")
-                st.caption(
-                    "La predicción es orientativa (error típico cercano al MAE mostrado). "
-                    "El género entra como una variable más; no implica causalidad."
-                )
 
             st.divider()
             st.subheader("Comparar predicción cambiando solo el género")
