@@ -181,7 +181,7 @@ def load_carrera_map() -> dict[int, str]:
     if not p.is_file():
         return {}
     t = pd.read_csv(p)
-    return {int(r["carrera_id"]): str(r["carrera"]).strip() for _, r in t.iterrows() if pd.notna(r.get("carrera_id")) and pd.notna(r.get("carrera"))}
+    return {int(r["carrera_id"]): str(r["carrera"]).split('(')[0].strip() for _, r in t.iterrows() if pd.notna(r.get("carrera_id")) and pd.notna(r.get("carrera"))}
 
 
 def _etiqueta_codigo(m: dict[int, str], valor) -> str:
