@@ -382,7 +382,8 @@ def _inject_theme_css() -> None:
             p, li, span, label {{
                 color: {C["texto"]} !important;
             }}
-            .stButton button p, .stButton button span, .stButton button div {{
+            .stButton button p, .stButton button span, .stButton button div,
+            .stLinkButton a p, .stLinkButton a span, .stLinkButton a div {{
                 color: {C["blanco"]} !important;
             }}
             [data-baseweb="tag"] span {{
