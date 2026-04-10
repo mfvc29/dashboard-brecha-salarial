@@ -382,6 +382,9 @@ def _inject_theme_css() -> None:
             p, li, span, label {{
                 color: {C["texto"]} !important;
             }}
+            .stButton button p, .stButton button span, .stButton button div {{
+                color: {C["blanco"]} !important;
+            }}
             .stCaption, [data-testid="stCaption"] {{
                 color: {C["nota"]} !important;
             }}
