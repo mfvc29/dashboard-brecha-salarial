@@ -848,13 +848,14 @@ def main():
                 
             df_carreras = dff[dff["carrera_id"].isin(valid_carreras)]
             if not df_carreras.empty:
+                def _fmt_carrera(x):
+                    return str(map_carreras.get(int(x), f"Cód {int(x)}")).title()
+
                 top_carreras = df_carreras.groupby("carrera_id")["ingreso_mensual"].mean().nlargest(10).index
                 df_top = df_carreras[df_carreras["carrera_id"].isin(top_carreras)].copy()
                 
                 df_top_group = df_top.groupby(["carrera_id", "genero_label"])["ingreso_mensual"].mean().reset_index()
                 mean_order = df_top.groupby("carrera_id")["ingreso_mensual"].mean().sort_values(ascending=False).index
-                def _fmt_carrera(x):
-                    return str(map_carreras.get(int(x), f"Cód {int(x)}")).title()
                     
                 df_top_group["carrera_str"] = df_top_group["carrera_id"].apply(_fmt_carrera)
                 
@@ -876,6 +877,37 @@ def main():
                 fig_c.update_yaxes(tickformat=f".{ND}f")
                 _plotly_base_layout(fig_c, "Top 10 Carreras Mejor Pagadas")
                 st.plotly_chart(fig_c, use_container_width=True)
+
+                st.divider()
+                st.subheader("Carreras peor pagadas por género")
+                st.caption("Top 10 de carreras con los menores ingresos promedio en la muestra actual.")
+                
+                bottom_carreras = df_carreras.groupby("carrera_id")["ingreso_mensual"].mean().nsmallest(10).index
+                df_bottom = df_carreras[df_carreras["carrera_id"].isin(bottom_carreras)].copy()
+                
+                df_bottom_group = df_bottom.groupby(["carrera_id", "genero_label"])["ingreso_mensual"].mean().reset_index()
+                mean_order_b = df_bottom.groupby("carrera_id")["ingreso_mensual"].mean().sort_values(ascending=True).index
+                    
+                df_bottom_group["carrera_str"] = df_bottom_group["carrera_id"].apply(_fmt_carrera)
+                
+                fig_b = px.bar(
+                    df_bottom_group,
+                    x="carrera_str",
+                    y="ingreso_mensual",
+                    color="genero_label",
+                    barmode="group",
+                    labels={
+                        "ingreso_mensual": "Ingreso promedio (S/)", 
+                        "carrera_str": "Carrera",
+                        "genero_label": "Género"
+                    },
+                    color_discrete_map=COLOR_GENERO,
+                    category_orders={"carrera_str": [_fmt_carrera(x) for x in mean_order_b]}
+                )
+                fig_b.update_layout(xaxis_title="Carrera", yaxis_title="Ingreso Mensual Promedio (S/)")
+                fig_b.update_yaxes(tickformat=f".{ND}f")
+                _plotly_base_layout(fig_b, "Top 10 Carreras Peor Pagadas")
+                st.plotly_chart(fig_b, use_container_width=True)
             else:
                 st.warning("No hay suficientes datos por carrera para calcular el top de ingresos.")
 
