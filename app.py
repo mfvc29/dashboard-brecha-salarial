@@ -385,6 +385,9 @@ def _inject_theme_css() -> None:
             .stButton button p, .stButton button span, .stButton button div {{
                 color: {C["blanco"]} !important;
             }}
+            [data-baseweb="tag"] span {{
+                color: {C["blanco"]} !important;
+            }}
             .stCaption, [data-testid="stCaption"] {{
                 color: {C["nota"]} !important;
             }}
