@@ -498,14 +498,15 @@ def main():
             help=_var_help(dep_filt) + " Si no eliges ninguno, se usan todos.",
         )
         
-        opts_tit = _get_opciones(df, "titulado")
-        sel_tit = st.multiselect(
+        opts_tit_raw = _get_opciones(df, "titulado")
+        opts_tit_labels = list(dict.fromkeys([MAP_SI_NO.get(k, str(k)) for k in opts_tit_raw]))
+        sel_tit_labels = st.multiselect(
             "Titulado (vacío = todos)",
-            opts_tit,
-            format_func=lambda k: MAP_SI_NO.get(k, f"Opción {int(k)}"),
+            opts_tit_labels,
             default=[],
             help=_var_help("titulado"),
         )
+        sel_tit = [k for k in opts_tit_raw if MAP_SI_NO.get(k, str(k)) in sel_tit_labels]
         
         map_sec_sidebar = load_sector_laboral_map()
         opts_sec = _get_opciones(df, "sector_laboral")
