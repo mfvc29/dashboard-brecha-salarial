@@ -1081,25 +1081,35 @@ def main():
                     format_func=lambda k: MAP_GEST_UNIV.get(k, f"Opción {int(k)}"),
                     help=_var_help("gestion_universidad"),
                 )
-                def_oc = _df_int_default(df, "ocupacion_cod", ocu_lo)
-                ocup_cod_str = st.text_input(
+                opts_oc = _get_opciones(df, "ocupacion_cod")
+                def_oc = float(_df_int_default(df, "ocupacion_cod", opts_oc[0] if opts_oc else 0))
+                ocup_cod = st.selectbox(
                     "Ocupación principal",
-                    value=str(def_oc),
-                    help=_var_help("ocupacion_cod") + " (Campo de texto)",
+                    options=opts_oc,
+                    index=opts_oc.index(def_oc) if def_oc in opts_oc else 0,
+                    format_func=lambda k: f"Ocupación (Cód: {int(k)})",
+                    help=_var_help("ocupacion_cod"),
                 )
                 
-                def_act = _df_int_default(df, "actividad_economica_cod", act_lo)
-                act_cod_str = st.text_input(
+                opts_act = _get_opciones(df, "actividad_economica_cod")
+                def_act = float(_df_int_default(df, "actividad_economica_cod", opts_act[0] if opts_act else 0))
+                act_cod = st.selectbox(
                     "Actividad económica",
-                    value=str(def_act),
-                    help=_var_help("actividad_economica_cod") + " (Campo de texto)",
+                    options=opts_act,
+                    index=opts_act.index(def_act) if def_act in opts_act else 0,
+                    format_func=lambda k: f"Actividad (Cód: {int(k)})",
+                    help=_var_help("actividad_economica_cod"),
                 )
                 
-            def_car = _df_int_default(df, "carrera_id", car_lo)
-            carrera_id_str = st.text_input(
+            map_carr = load_carrera_map()
+            opts_car = _get_opciones(df, "carrera_id")
+            def_car = float(_df_int_default(df, "carrera_id", opts_car[0] if opts_car else 0))
+            carrera_id_val = st.selectbox(
                 "Carrera",
-                value=str(def_car),
-                help=_var_help("carrera_id") + " (Campo de texto)",
+                options=opts_car,
+                index=opts_car.index(def_car) if def_car in opts_car else 0,
+                format_func=lambda k: str(map_carr.get(int(k), f"Cód {int(k)}")).title(),
+                help=_var_help("carrera_id"),
             )
     
             row_dict = {
@@ -1111,15 +1121,15 @@ def main():
                 "tipo_contrato": t_con,
                 "sector_laboral": sec,
                 "tamanio_empresa": tam,
-                "ocupacion_cod": _safe_float(ocup_cod_str),
-                "actividad_economica_cod": _safe_float(act_cod_str),
+                "ocupacion_cod": float(ocup_cod),
+                "actividad_economica_cod": float(act_cod),
                 "titulado": tit,
                 "cuadro_merito": cm,
                 "postgrado": pg,
                 "idioma_extranjero": idi,
                 "practicas_preprof": pra,
                 "gestion_universidad": ges,
-                "carrera_id": _safe_float(carrera_id_str),
+                "carrera_id": float(carrera_id_val),
                 dep_col_model: dep_sel,
             }
             row = _complete_prediction_row(df, feat_cols, row_dict)
