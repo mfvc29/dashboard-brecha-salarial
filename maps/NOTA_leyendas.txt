@@ -1,0 +1,6 @@
+Estas tablas traducen los códigos numéricos 1–5 a texto para la interfaz del dashboard.
+No modifican los datos ni el modelo: solo sirven para mostrar etiquetas legibles.
+
+Si el manual de tu encuesta define otras etiquetas para sector laboral o tamaño de empresa,
+edita sector_laboral_map.csv y tamanio_empresa_map.csv según ese manual.
+Los números 1–5 en los datos no cambian; solo cambia el texto que ve el usuario en el dashboard.

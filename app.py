@@ -38,49 +38,147 @@ C = {
 GENERO_MAP = {1.0: "Masculino", 2.0: "Femenino"}
 GENERO_INV = {"Masculino": 1.0, "Femenino": 2.0}
 
-# Descripciones para la UI (variable renombrada → código encuesta + texto)
-VAR_META: dict[str, dict[str, str]] = {
-    "genero": {"cap": "GENERO", "desc": "Sexo del encuestado."},
-    "ingreso_mensual": {"cap": "CAP400P436_MONE", "desc": "Ingreso mensual principal."},
-    "horas_semanales": {"cap": "CAP400P415_TOT", "desc": "Horas trabajadas semanalmente."},
-    "ingreso_primer_empleo": {"cap": "CAP400P472", "desc": "Ingreso en el primer empleo."},
-    "categoria_ocupacional": {"cap": "CAP400P409", "desc": "Categoría ocupacional."},
-    "tipo_contrato": {"cap": "CAP400P413", "desc": "Tipo de contrato."},
-    "sector_laboral": {"cap": "CAP400P410", "desc": "Sector laboral."},
-    "tamanio_empresa": {"cap": "CAP400P414", "desc": "Tamaño de la empresa."},
-    "ocupacion_cod": {"cap": "CAP400P405ACOD", "desc": "Código de ocupación principal."},
-    "actividad_economica_cod": {"cap": "CAP400P408COD", "desc": "Actividad económica de la empresa."},
-    "carrera_id": {"cap": "CAP300P312", "desc": "Carrera o especialidad (identificador en datos procesados)."},
-    "titulado": {"cap": "CAP300P330", "desc": "Título profesional."},
-    "cuadro_merito": {"cap": "CAP300P324", "desc": "Pertenece al cuadro de méritos."},
-    "postgrado": {"cap": "CAP300P335", "desc": "Estudios de postgrado realizados."},
-    "idioma_extranjero": {"cap": "CAP600P603_10", "desc": "Dominio de idioma extranjero."},
-    "practicas_preprof": {"cap": "CAP300P349", "desc": "Realizó prácticas profesionales."},
-    "gestion_universidad": {"cap": "SELECT_UNI_GESTION", "desc": "Gestión de la universidad: 1 Pública, 2 Privada."},
-    "departamento": {"cap": "NOMBRECCDD", "desc": "Departamento de residencia."},
-    "departamento_id": {"cap": "NOMBRECCDD", "desc": "Departamento de residencia (identificador en datos procesados)."},
-    "distrito": {"cap": "NOMBRECCDI", "desc": "Distrito de residencia."},
-    "culmino_estudio": {"cap": "CULMEST", "desc": "¿Ha culminado sus estudios universitarios? 1 Sí, 2 No."},
-    "salario_hora": {"cap": "—", "desc": "Derivado: ingreso mensual ÷ (horas semanales × 4,3)."},
-    "genero_label": {"cap": "GENERO", "desc": "Etiqueta de sexo del encuestado (Masculino / Femenino)."},
+# Decimales mostrados en toda la interfaz
+ND = 2
+
+# Textos de ayuda (solo lenguaje claro; sin códigos de variable ni CAP)
+VAR_DESC: dict[str, str] = {
+    "genero": "Sexo del encuestado.",
+    "ingreso_mensual": "Ingreso mensual principal.",
+    "horas_semanales": "Horas trabajadas por semana.",
+    "ingreso_primer_empleo": "Ingreso en el primer empleo (categoría de la encuesta).",
+    "categoria_ocupacional": "Categoría ocupacional.",
+    "tipo_contrato": "Tipo de contrato.",
+    "sector_laboral": "Sector laboral.",
+    "tamanio_empresa": "Tamaño de la empresa.",
+    "ocupacion_cod": "Ocupación principal (categoría codificada).",
+    "actividad_economica_cod": "Actividad económica de la empresa (categoría codificada).",
+    "carrera_id": "Carrera o especialidad (según el catálogo usado en los datos).",
+    "titulado": "Título profesional.",
+    "cuadro_merito": "Pertenece al cuadro de méritos.",
+    "postgrado": "Estudios de postgrado realizados.",
+    "idioma_extranjero": "Dominio de idioma extranjero.",
+    "practicas_preprof": "Prácticas profesionales realizadas.",
+    "gestion_universidad": "Gestión de la universidad (pública o privada).",
+    "departamento": "Departamento de residencia.",
+    "departamento_id": "Departamento de residencia.",
+    "departamento_nombre": "Departamento de residencia.",
+    "distrito": "Distrito de residencia.",
+    "culmino_estudio": "¿Culminó estudios universitarios? (categoría de la encuesta).",
+    "salario_hora": "Salario por hora estimado a partir del ingreso mensual y las horas semanales.",
+    "genero_label": "Género (Masculino / Femenino).",
 }
 
 
 def _var_help(col: str) -> str:
-    m = VAR_META.get(col)
-    if not m:
-        return ""
-    cap = m["cap"]
-    if cap == "—":
-        return m["desc"]
-    return f"{cap} — {m['desc']}"
+    return VAR_DESC.get(col, "")
 
 
-def _var_axis_label(col: str, short: str) -> str:
-    m = VAR_META.get(col)
-    if not m:
-        return short
-    return f"{short} ({m['cap']})" if m["cap"] != "—" else short
+def _fmt_round(x: float | None, nd: int = ND) -> str:
+    if x is None or not np.isfinite(x):
+        return "—"
+    return f"{round(float(x), nd):.{nd}f}"
+
+
+def _fmt_soles(x: float | None, nd: int = ND) -> str:
+    if x is None or not np.isfinite(x):
+        return "—"
+    return f"S/ {_fmt_round(x, nd)}"
+
+
+@st.cache_data(show_spinner=False)
+def load_departamento_id_to_nombre() -> dict[int, str]:
+    p = BASE / "maps" / "departamento_map.csv"
+    if not p.is_file():
+        return {}
+    t = pd.read_csv(p)
+    return {int(r["departamento_id"]): str(r["departamento"]).strip() for _, r in t.iterrows()}
+
+
+def _departamento_nombre_from_id(dmap: dict[int, str], x) -> str:
+    if pd.isna(x):
+        return "Sin dato"
+    try:
+        xi = int(float(x))
+    except (TypeError, ValueError):
+        return str(x)
+    return dmap.get(xi, f"ID {xi}")
+
+
+def _columna_filtro_departamento(df: pd.DataFrame) -> str:
+    if "departamento_nombre" in df.columns:
+        return "departamento_nombre"
+    if "departamento" in df.columns:
+        return "departamento"
+    return "departamento_id"
+
+
+def _read_codigo_etiqueta_map(filename: str) -> dict[int, str]:
+    """Mapa codigo→etiqueta para gráficos y selectores (no toca el modelo)."""
+    p = BASE / "maps" / filename
+    if not p.is_file():
+        return {}
+    t = pd.read_csv(p)
+    if "codigo" not in t.columns or "etiqueta" not in t.columns:
+        return {}
+    out: dict[int, str] = {}
+    for _, r in t.iterrows():
+        try:
+            out[int(float(r["codigo"]))] = str(r["etiqueta"]).strip()
+        except (TypeError, ValueError, KeyError):
+            continue
+    return out
+
+
+MAP_SI_NO = {1.0: "Sí", 2.0: "No", 0.0: "No"}
+MAP_CAT_OCUPACIONAL = {
+    1.0: "Empleador o patrono",
+    2.0: "Trabajador independiente",
+    3.0: "Empleado",
+    4.0: "Obrero",
+    5.0: "Trabajador familiar no remunerado",
+    6.0: "Trabajador del hogar",
+    7.0: "Otro"
+}
+MAP_TIPO_CONTRATO = {
+    1.0: "Contrato indefinido / permanente",
+    2.0: "Contrato a plazo fijo",
+    3.0: "En período de prueba",
+    4.0: "Convenios de formación laboral",
+    5.0: "Locación de servicios / Honorarios",
+    6.0: "Régimen especial (CAS)",
+    7.0: "Sin contrato",
+    8.0: "Otro"
+}
+MAP_GEST_UNIV = {1.0: "Pública", 2.0: "Privada"}
+MAP_IDIOMA_EXTRANJERO = {1.0: "Excelente", 2.0: "Bueno", 3.0: "Regular", 4.0: "Malo", 5.0: "No sabe"}
+
+def _safe_float(val, fallback: float = 0.0) -> float:
+    try:
+        return float(val)
+    except (ValueError, TypeError):
+        return fallback
+
+def _get_opciones(df: pd.DataFrame, col: str) -> list[float]:
+    if col not in df.columns:
+        return [0.0]
+    return sorted(df[col].dropna().unique().tolist())
+
+@st.cache_data(show_spinner=False)
+def load_sector_laboral_map() -> dict[int, str]:
+    return _read_codigo_etiqueta_map("sector_laboral_map.csv")
+
+@st.cache_data(show_spinner=False)
+def load_tamanio_empresa_map() -> dict[int, str]:
+    return _read_codigo_etiqueta_map("tamanio_empresa_map.csv")
+
+
+def _etiqueta_codigo(m: dict[int, str], valor) -> str:
+    try:
+        k = int(float(valor))
+    except (TypeError, ValueError):
+        return str(valor)
+    return m.get(k, f"Nivel {k}")
 
 
 def _df_int_default(df: pd.DataFrame, col: str, fallback: int = 0) -> int:
@@ -158,44 +256,42 @@ def _load_ml_artifact():
 
 
 def _render_variable_glossary() -> None:
-    """Lista las variables críticas con código de encuesta y descripción."""
+    """Glosario en lenguaje claro (sin códigos técnicos ni nombres de columnas internas)."""
     bloques = [
         (
-            "1. Identidad y resultado",
-            ["genero", "ingreso_mensual", "horas_semanales", "ingreso_primer_empleo", "salario_hora"],
-        ),
-        (
-            "2. Condición laboral",
+            "Identidad y resultado",
             [
-                "categoria_ocupacional",
-                "tipo_contrato",
-                "sector_laboral",
-                "tamanio_empresa",
-                "ocupacion_cod",
-                "actividad_economica_cod",
+                "Sexo del encuestado.",
+                "Ingreso mensual principal.",
+                "Horas trabajadas por semana.",
+                "Ingreso en el primer empleo.",
+                "Salario por hora (derivado del ingreso y las horas).",
             ],
         ),
         (
-            "3. Capital humano",
-            ["carrera_id", "titulado", "cuadro_merito", "postgrado", "idioma_extranjero", "practicas_preprof"],
+            "Condición laboral",
+            [
+                "Categoría ocupacional, tipo de contrato, sector y tamaño de empresa.",
+                "Ocupación y actividad económica (categorías codificadas).",
+            ],
         ),
-        ("4. Entorno institucional", ["gestion_universidad"]),
-        ("5. Control geográfico", ["departamento", "departamento_id", "distrito"]),
-        ("6. Estudios", ["culmino_estudio"]),
+        (
+            "Capital humano y formación",
+            [
+                "Carrera o especialidad.",
+                "Título profesional, cuadro de méritos, postgrado.",
+                "Idioma extranjero y prácticas profesionales.",
+            ],
+        ),
+        ("Institución", ["Gestión de la universidad (pública o privada)."]),
+        ("Ubicación", ["Departamento y distrito de residencia."]),
+        ("Estudios", ["Si culminó o no la carrera universitaria."]),
     ]
     lines: list[str] = []
-    for titulo, keys in bloques:
+    for titulo, items in bloques:
         lines.append(f"**{titulo}**")
-        for k in keys:
-            if k not in VAR_META:
-                continue
-            meta = VAR_META[k]
-            cap = meta["cap"]
-            desc = meta["desc"]
-            if cap == "—":
-                lines.append(f"- **{k}**: {desc}")
-            else:
-                lines.append(f"- **{k}** (`{cap}`): {desc}")
+        for t in items:
+            lines.append(f"- {t}")
         lines.append("")
     st.markdown("\n".join(lines).strip())
 
@@ -211,6 +307,9 @@ def load_data() -> pd.DataFrame:
         df.loc[mask_fill, "ingreso_mensual"] / df.loc[mask_fill, "horas_semanales"]
     )
     df["genero_label"] = df["genero"].map(GENERO_MAP).fillna("Sin dato")
+    dmap = load_departamento_id_to_nombre()
+    if "departamento_id" in df.columns and dmap:
+        df["departamento_nombre"] = df["departamento_id"].apply(lambda x: _departamento_nombre_from_id(dmap, x))
     return df
 
 
@@ -243,7 +342,9 @@ def agregar_brecha_por_grupo(df: pd.DataFrame, col: str, min_n: int = 30) -> pd.
     out = pd.DataFrame(rows)
     if out.empty:
         return out
-    return out.sort_values("brecha_pct", ascending=False)
+    out = out.sort_values("brecha_pct", ascending=False)
+    out["brecha_pct"] = pd.to_numeric(out["brecha_pct"], errors="coerce").round(ND)
+    return out
 
 
 def _inject_theme_css() -> None:
@@ -364,21 +465,41 @@ def main():
         "Panel exploratorio y modelo predictivo de **ingreso mensual** — datos de egresados "
         "(codificación INEI: 1 Masculino, 2 Femenino)."
     )
-    with st.expander("Variables del estudio (códigos CAP y descripción)", expanded=False):
+    with st.expander("Qué datos se usan en el panel", expanded=False):
         _render_variable_glossary()
 
     df = load_data()
 
     with st.sidebar:
         st.header("Filtros")
-        dep_col = "departamento" if "departamento" in df.columns else "departamento_id"
-        deps = sorted(df[dep_col].dropna().unique().tolist())
+        dep_filt = _columna_filtro_departamento(df)
+        deps = sorted(df[dep_filt].dropna().unique().tolist())
         sel_dep = st.multiselect(
-            "Departamento (vacío = todos)" if dep_col == "departamento" else "Departamento ID (vacío = todos)",
+            "Departamento (vacío = todos)",
             deps,
             default=[],
-            help=_var_help(dep_col) + " Si no eliges ninguno, se usan todos.",
+            help=_var_help(dep_filt) + " Si no eliges ninguno, se usan todos.",
         )
+        
+        opts_tit = _get_opciones(df, "titulado")
+        sel_tit = st.multiselect(
+            "Titulado (vacío = todos)",
+            opts_tit,
+            format_func=lambda k: MAP_SI_NO.get(k, f"Opción {int(k)}"),
+            default=[],
+            help=_var_help("titulado"),
+        )
+        
+        map_sec_sidebar = load_sector_laboral_map()
+        opts_sec = _get_opciones(df, "sector_laboral")
+        sel_sec = st.multiselect(
+            "Sector laboral (vacío = todos)",
+            opts_sec,
+            format_func=lambda k: _etiqueta_codigo(map_sec_sidebar, k),
+            default=[],
+            help=_var_help("sector_laboral"),
+        )
+        
         ing_min, ing_max = float(df["ingreso_mensual"].min()), float(df["ingreso_mensual"].max())
         r_ing = st.slider(
             "Rango ingreso mensual (S/)",
@@ -400,9 +521,13 @@ def main():
         st.text(f"Columnas: {df.shape[1]}")
 
     dff = df.copy()
-    dep_col = "departamento" if "departamento" in dff.columns else "departamento_id"
+    dep_filt = _columna_filtro_departamento(dff)
     if len(sel_dep) > 0:
-        dff = dff[dff[dep_col].isin(sel_dep)]
+        dff = dff[dff[dep_filt].isin(sel_dep)]
+    if len(sel_tit) > 0:
+        dff = dff[dff["titulado"].isin(sel_tit)]
+    if len(sel_sec) > 0:
+        dff = dff[dff["sector_laboral"].isin(sel_sec)]
     dff = dff[
         (dff["ingreso_mensual"] >= r_ing[0])
         & (dff["ingreso_mensual"] <= r_ing[1])
@@ -420,20 +545,19 @@ def main():
     c1, c2, c3, c4 = st.columns(4)
     c1.metric(
         "Media ingreso — Masculino",
-        f"S/ {m_m:,.0f}" if len(hom) else "—",
+        _fmt_soles(m_m) if len(hom) else "—",
         help=_var_help("ingreso_mensual") + " Promedio en submuestra masculina.",
     )
     c2.metric(
         "Media ingreso — Femenino",
-        f"S/ {m_f:,.0f}" if len(muj) else "—",
+        _fmt_soles(m_f) if len(muj) else "—",
         help=_var_help("ingreso_mensual") + " Promedio en submuestra femenina.",
     )
     if gap is not None:
         c3.metric(
             "Brecha (media)",
-            f"{gap:.1f} %",
-            help="(media M − media F) / media M × 100. Compara medias de "
-            + _var_help("ingreso_mensual"),
+            f"{round(gap, ND):.{ND}f} %",
+            help="(media hombres − media mujeres) / media hombres × 100, sobre ingreso mensual.",
         )
     else:
         c3.metric("Brecha (media)", "—")
@@ -446,20 +570,84 @@ def main():
     if gap is not None and gap > 0:
         st.markdown(
             f'<div class="info-box">Con los filtros actuales, el ingreso mensual <strong>promedio</strong> '
-            f'de mujeres es aproximadamente <strong style="color:{C["brecha"]}">{gap:.1f} %</strong> menor '
+            f'de mujeres es aproximadamente <strong style="color:{C["brecha"]}">{round(gap, ND):.{ND}f} %</strong> menor '
             f"que el de hombres (brecha relativa).</div>",
             unsafe_allow_html=True,
         )
     elif gap is not None and gap < 0:
         st.markdown(
             f'<div class="info-box">La media femenina supera a la masculina en magnitud relativa '
-            f'(<strong style="color:{C["brecha"]}">{gap:.1f} %</strong>; interpretar con precaución).</div>',
+            f'(<strong style="color:{C["brecha"]}">{round(gap, ND):.{ND}f} %</strong>; interpretar con precaución).</div>',
             unsafe_allow_html=True,
         )
 
-    tab1, tab2, tab3 = st.tabs(["Distribución y comparación", "Brecha por dimensiones", "Predicción (ML)"])
+    tab1, tab2, tab3, tab4 = st.tabs([
+        "Visión General y Narrativa",
+        "Distribución y comparación",
+        "Brecha por dimensiones",
+        "Predicción (ML)",
+    ])
 
     with tab1:
+        st.subheader("Análisis Descriptivo Dinámico")
+        st.markdown(
+            "El dashboard interpreta matemáticamente la submuestra elegida para extraer hallazgos "
+            "estadísticos en lenguaje claro."
+        )
+        
+        if gap is not None:
+            v_gap = abs(round(gap, ND))
+            if gap > 0:
+                texto_brecha = f"Se evidencia una **brecha salarial del {v_gap}%** a favor de los egresados hombres."
+            elif gap < 0:
+                texto_brecha = f"Se evidencia una **brecha salarial atípica del {v_gap}%** a favor de las egresadas mujeres."
+            else:
+                texto_brecha = "Prácticamente no existe brecha salarial (0%) general, los ingresos promedios son equitativos."
+        else:
+            texto_brecha = "No existen suficientes datos para calcular una brecha válida en esta selección."
+            
+        texto_dep = "a nivel país" if not sel_dep else f"en los departamentos de **{', '.join(map(str, sel_dep))}**"
+        
+        texto_titulado = ""
+        if sel_tit:
+            lbls_tit = [MAP_SI_NO.get(k, str(k)) for k in sel_tit]
+            texto_titulado = f", considerando titulados: **{', '.join(lbls_tit)}**"
+            
+        texto_sector = ""
+        if sel_sec:
+            lbls_sec = [_etiqueta_codigo(map_sec_sidebar, k) for k in sel_sec]
+            texto_sector = f", dentro del sector **{', '.join(lbls_sec)}**"
+
+        st.info(
+            f"Analizando a los egresados residentes {texto_dep}{texto_titulado}{texto_sector}; interactuamos con "
+            f"una muestra de **{len(dff):,}** observaciones representativas con ingresos documentados. \n\n"
+            f"Bajo las reglas actuales de selección, **el ingreso medio de la población masculina es {_fmt_soles(m_m)}**, "
+            f"mientras que **la población femenina promedia {_fmt_soles(m_f)}**. {texto_brecha}"
+        )
+        
+        if len(dff) > 0 and gap is not None and gap > 0:
+            brecha_abs = m_m - m_f
+            st.markdown(
+                f"> 💡 En términos monetarios (absolutos), esta brecha equivale a que, en promedio, una mujer se priva "
+                f"de ganar **__{_fmt_soles(brecha_abs)}__** mensualmente en comparación de un hombre "
+                f"con el mismo perfil seleccionado."
+            )
+            
+        if len(dff) < 100 and len(dff) > 0:
+            st.warning(
+                "⚠️ **Atención:** El tamaño de la muestra es muy pequeño (N < 100). Las medias mostradas "
+                "pueden estar fuertemente sesgadas por ingresos anómalos o extremos ('outliers')."
+            )
+            
+        st.divider()
+        st.subheader("Acerca de los Datos")
+        st.markdown(
+            "- **Origen:** La data expuesta procede de cuestionarios codificados de egresados.\n"
+            "- **Enfoque Descriptivo:** Esta herramienta busca encontrar áreas de mejora a nivel local e institucional.\n"
+            "- **Explorar:** Pasa a la pestaña de _Distribución y comparación_ para visualizar las curvas de ingresos."
+        )
+
+    with tab2:
         col_a, col_b = st.columns(2)
         with col_a:
             fig_box = px.box(
@@ -469,15 +657,16 @@ def main():
                 color="genero_label",
                 points=False,
                 labels={
-                    "ingreso_mensual": _var_axis_label("ingreso_mensual", "Ingreso mensual (S/)"),
-                    "genero_label": _var_axis_label("genero_label", "Género"),
+                    "ingreso_mensual": "Ingreso mensual (S/)",
+                    "genero_label": "Género",
                 },
                 color_discrete_map=COLOR_GENERO,
                 category_orders={"genero_label": ["Masculino", "Femenino"]},
             )
             fig_box.update_layout(showlegend=False, height=420)
+            fig_box.update_yaxes(tickformat=f".{ND}f")
             _plotly_base_layout(fig_box, "Ingreso mensual por género")
-            st.caption(_var_help("ingreso_mensual") + " " + _var_help("genero"))
+            st.caption("Comparación de ingreso mensual por género.")
             st.plotly_chart(fig_box, use_container_width=True)
         with col_b:
             sh = dff.dropna(subset=["salario_hora"])
@@ -490,15 +679,19 @@ def main():
                 color="genero_label",
                 box=True,
                 labels={
-                    "salario_hora": _var_axis_label("salario_hora", "Salario hora (S/)"),
-                    "genero_label": _var_axis_label("genero_label", "Género"),
+                    "salario_hora": "Salario por hora (S/)",
+                    "genero_label": "Género",
                 },
                 color_discrete_map=COLOR_GENERO,
                 category_orders={"genero_label": ["Masculino", "Femenino"]},
             )
             fig_v.update_layout(showlegend=False, height=420)
+            fig_v.update_yaxes(tickformat=f".{ND}f")
             _plotly_base_layout(fig_v, "Salario por hora (S/) — extremos recortados al p99.5")
-            st.caption(_var_help("salario_hora") + " Extremos recortados al percentil 99.5.")
+            st.caption(
+                "Salario por hora estimado a partir del ingreso y las horas. "
+                "Extremos recortados al percentil 99.5."
+            )
             st.plotly_chart(fig_v, use_container_width=True)
 
         st.subheader("Histograma comparativo")
@@ -515,35 +708,47 @@ def main():
             )
         fig_hist.update_layout(
             barmode="overlay",
-            xaxis_title=_var_axis_label("ingreso_mensual", "Ingreso mensual (S/)"),
+            xaxis_title="Ingreso mensual (S/)",
             yaxis_title="Frecuencia",
             height=400,
             legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
         )
         _plotly_base_layout(fig_hist, "Ingreso mensual")
-        st.caption(_var_help("ingreso_mensual"))
+        fig_hist.update_xaxes(tickformat=f".{ND}f")
+        st.caption("Distribución del ingreso mensual en la submuestra filtrada.")
         st.plotly_chart(fig_hist, use_container_width=True)
 
         st.caption(
-            f"Medianas — Masculino: S/ {med_m:,.0f} · Femenino: S/ {med_f:,.0f} "
-            f"(en submuestra filtrada). {_var_help('genero')}"
+            f"Medianas — Masculino: {_fmt_soles(med_m)} · Femenino: {_fmt_soles(med_f)} "
+            "(submuestra filtrada)."
         )
 
-    with tab2:
+    with tab3:
         st.subheader("Brecha por departamento")
-        st.caption(_var_help(dep_col))
-        bd = agregar_brecha_por_grupo(dff, dep_col, min_n=25)
+        st.caption("Departamento de residencia (nombre oficial).")
+        dmap_plot = load_departamento_id_to_nombre()
+        if "departamento_id" in dff.columns:
+            bd = agregar_brecha_por_grupo(dff, "departamento_id", min_n=25)
+            if not bd.empty:
+                bd["departamento_nombre"] = bd["departamento_id"].apply(
+                    lambda x: _departamento_nombre_from_id(dmap_plot, x)
+                )
+                y_dep = "departamento_nombre"
+            else:
+                y_dep = "departamento_id"
+        else:
+            bd = agregar_brecha_por_grupo(dff, "departamento", min_n=25)
+            y_dep = "departamento"
         if bd.empty:
             st.warning("No hay suficientes observaciones por género en los grupos; afloja filtros.")
         else:
             bd_plot = bd.head(20).sort_values("brecha_pct", ascending=True)
-            dep_lbl = _var_axis_label(dep_col, "Departamento")
             fig_d = px.bar(
                 bd_plot,
                 x="brecha_pct",
-                y=dep_col,
+                y=y_dep,
                 orientation="h",
-                labels={"brecha_pct": "Brecha % (M vs F)", dep_col: dep_lbl},
+                labels={"brecha_pct": "Brecha % (M vs F)", y_dep: "Departamento"},
                 color="brecha_pct",
                 color_continuous_scale=[
                     [0.0, C["neutro_claro"]],
@@ -552,57 +757,69 @@ def main():
                 ],
             )
             fig_d.update_layout(height=520, yaxis={"categoryorder": "total ascending"})
+            fig_d.update_xaxes(tickformat=f".{ND}f")
             _plotly_base_layout(fig_d, "Top departamentos por brecha de media")
             st.caption(
-                "Brecha relativa entre medias de "
-                + _var_help("ingreso_mensual")
-                + " "
-                + _var_help("genero")
+                "Brecha relativa entre las medias de ingreso mensual de hombres y de mujeres, por departamento."
             )
             st.plotly_chart(fig_d, use_container_width=True)
 
         c21, c22 = st.columns(2)
+        map_sec = load_sector_laboral_map()
+        map_tam = load_tamanio_empresa_map()
         with c21:
-            st.subheader("Por sector laboral (código)")
-            st.caption(_var_help("sector_laboral"))
+            st.subheader("Por sector laboral")
+            st.caption(
+                "Etiquetas legibles desde `maps/sector_laboral_map.csv`. "
+                "Si no coinciden con tu manual de encuesta, edita ese archivo (el modelo sigue usando 1–5)."
+            )
             bs = agregar_brecha_por_grupo(dff, "sector_laboral", min_n=40)
             if not bs.empty:
+                bs_plot = bs.sort_values("brecha_pct", ascending=False).head(12).copy()
+                bs_plot["sector_etiqueta"] = bs_plot["sector_laboral"].apply(
+                    lambda v: _etiqueta_codigo(map_sec, v)
+                )
                 fig_s = px.bar(
-                    bs.sort_values("brecha_pct", ascending=False).head(12),
-                    x="sector_laboral",
+                    bs_plot,
+                    x="sector_etiqueta",
                     y="brecha_pct",
-                    labels={
-                        "brecha_pct": "Brecha %",
-                        "sector_laboral": _var_axis_label("sector_laboral", "Sector (cód.)"),
-                    },
+                    labels={"brecha_pct": "Brecha (%)", "sector_etiqueta": "Sector laboral"},
                     color_discrete_sequence=[C["brecha"]],
                 )
+                fig_s.update_layout(xaxis_title="Sector laboral", yaxis_title="Brecha (%)")
+                fig_s.update_yaxes(tickformat=f".{ND}f")
                 _plotly_base_layout(fig_s, "Brecha por sector laboral")
                 st.plotly_chart(fig_s, use_container_width=True)
         with c22:
-            st.subheader("Por tamaño de empresa (código)")
-            st.caption(_var_help("tamanio_empresa"))
+            st.subheader("Por tamaño de empresa")
+            st.caption(
+                "Etiquetas legibles desde `maps/tamanio_empresa_map.csv`. "
+                "Ajusta el CSV si tu cuestionario define otra leyenda (los datos siguen siendo 1–5)."
+            )
             bt = agregar_brecha_por_grupo(dff, "tamanio_empresa", min_n=40)
             if not bt.empty:
+                bt_plot = bt.sort_values("brecha_pct", ascending=False).copy()
+                bt_plot["tamanio_etiqueta"] = bt_plot["tamanio_empresa"].apply(
+                    lambda v: _etiqueta_codigo(map_tam, v)
+                )
                 fig_t = px.bar(
-                    bt.sort_values("brecha_pct", ascending=False),
-                    x="tamanio_empresa",
+                    bt_plot,
+                    x="tamanio_etiqueta",
                     y="brecha_pct",
-                    labels={
-                        "brecha_pct": "Brecha %",
-                        "tamanio_empresa": _var_axis_label("tamanio_empresa", "Tamaño empresa (cód.)"),
-                    },
+                    labels={"brecha_pct": "Brecha (%)", "tamanio_etiqueta": "Tamaño de empresa"},
                     color_discrete_sequence=[C["brecha"]],
                 )
+                fig_t.update_layout(xaxis_title="Tamaño de empresa", yaxis_title="Brecha (%)")
+                fig_t.update_yaxes(tickformat=f".{ND}f")
                 _plotly_base_layout(fig_t, "Brecha por tamaño de empresa")
                 st.plotly_chart(fig_t, use_container_width=True)
 
-    with tab3:
+    with tab4:
         st.markdown(
             f'<p style="color:{C["texto"]};">Predicción con <strong>CatBoost</strong> ya entrenado '
-            "(carga desde <code>artifacts/</code>). El objetivo del modelo es "
-            "<strong>ingreso mensual</strong> (entrenamiento con <code>log1p</code> si así "
-            "consta en los metadatos).</p>",
+            "(carpeta <strong>artifacts</strong> del repositorio). El modelo estima el "
+            "<strong>ingreso mensual</strong> (entrenado en escala logarítmica del ingreso, según "
+            "los metadatos guardados).</p>",
             unsafe_allow_html=True,
         )
         ml = _load_ml_artifact()
@@ -629,26 +846,23 @@ def main():
             m1, m2 = st.columns(2)
             m1.metric(
                 "MAE (validación)",
-                f"S/ {metrics['mae']:,.0f}" if metrics.get("mae") is not None else "—",
+                _fmt_soles(metrics["mae"]) if metrics.get("mae") is not None else "—",
             )
             m2.metric(
                 "R² (validación)",
-                f"{metrics['r2']:.3f}" if metrics.get("r2") is not None else "—",
+                _fmt_round(metrics["r2"]) if metrics.get("r2") is not None else "—",
             )
-            with st.expander("Variables de entrada del modelo (orden = entrenamiento)", expanded=False):
-                st.markdown(
-                    f"**{len(feat_cols)} columnas.** Categóricas (todas salvo `horas_semanales`), "
-                    "como en `modelo.build_model_pipe`."
-                )
-                st.code("\n".join(feat_cols), language=None)
+
 
             st.subheader("Estimar ingreso con tus valores")
             st.caption(
-                "Cada campo corresponde a una variable del cuestionario (ver expander superior). "
-                "Los códigos numéricos son las categorías INEI tal como vienen en los datos."
+                "Completa los campos con las categorías de la encuesta (ver glosario arriba). "
+                "Los números son códigos de categoría, no montos monetarios salvo donde se indique."
             )
             dep_col_model = "departamento" if "departamento" in df.columns else "departamento_id"
-            deps_all = sorted(df[dep_col_model].dropna().unique().tolist())
+            dmap_ui = load_departamento_id_to_nombre()
+            map_sec_ui = load_sector_laboral_map()
+            map_tam_ui = load_tamanio_empresa_map()
             ocu_lo, ocu_hi = _df_int_bounds(df, "ocupacion_cod")
             act_lo, act_hi = _df_int_bounds(df, "actividad_economica_cod")
             car_lo, car_hi = _df_int_bounds(df, "carrera_id")
@@ -662,123 +876,170 @@ def main():
                     value=40,
                     help=_var_help("horas_semanales"),
                 )
-                dep_sel = st.selectbox(
-                    "Departamento" if dep_col_model == "departamento" else "Departamento (ID)",
-                    deps_all,
-                    index=0,
-                    help=_var_help(dep_col_model),
-                )
+                if dep_col_model == "departamento_id" and dmap_ui:
+                    nombres_ord = sorted(dmap_ui.values())
+                    nombre_a_id = {v: k for k, v in dmap_ui.items()}
+                    def_nm = _departamento_nombre_from_id(
+                        dmap_ui, _df_int_default(df, "departamento_id", 15)
+                    )
+                    dep_idx = nombres_ord.index(def_nm) if def_nm in nombres_ord else 0
+                    dep_nombre = st.selectbox(
+                        "Departamento",
+                        nombres_ord,
+                        index=dep_idx,
+                        help=_var_help("departamento_nombre"),
+                    )
+                    dep_sel = float(nombre_a_id[dep_nombre])
+                else:
+                    deps_all = sorted(df[dep_col_model].dropna().unique().tolist())
+                    dep_sel = st.selectbox(
+                        "Departamento",
+                        deps_all,
+                        index=0,
+                        help=_var_help(dep_col_model),
+                    )
             with gc2:
-                culm = st.number_input(
-                    "¿Culminó estudios? (cód.)",
-                    min_value=0.0,
-                    max_value=5.0,
-                    value=float(_df_int_default(df, "culmino_estudio", 1)),
+                opts_culm = _get_opciones(df, "culmino_estudio")
+                def_culm = float(_df_int_default(df, "culmino_estudio", 1))
+                culm = st.selectbox(
+                    "¿Culminó estudios?",
+                    options=opts_culm,
+                    index=opts_culm.index(def_culm) if def_culm in opts_culm else 0,
+                    format_func=lambda k: MAP_SI_NO.get(k, f"Opción {int(k)}"),
                     help=_var_help("culmino_estudio"),
                 )
-                ing_pe = st.number_input(
-                    "Ingreso primer empleo (cód.)",
-                    min_value=0.0,
-                    max_value=20.0,
-                    value=float(_df_int_default(df, "ingreso_primer_empleo", 2)),
-                    help=_var_help("ingreso_primer_empleo"),
+                def_ing_pe = _df_int_default(df, "ingreso_primer_empleo", 2)
+                ing_pe_str = st.text_input(
+                    "Ingreso primer empleo",
+                    value=str(def_ing_pe),
+                    help=_var_help("ingreso_primer_empleo") + " (Campo de texto)",
                 )
-                cat_oc = st.number_input(
-                    "Categoría ocupacional (cód.)",
-                    min_value=0.0,
-                    max_value=10.0,
-                    value=float(_df_int_default(df, "categoria_ocupacional", 3)),
+                ing_pe = _safe_float(ing_pe_str)
+                
+                opts_cat_oc = _get_opciones(df, "categoria_ocupacional")
+                def_cat_oc = float(_df_int_default(df, "categoria_ocupacional", 3))
+                cat_oc = st.selectbox(
+                    "Categoría ocupacional",
+                    options=opts_cat_oc,
+                    index=opts_cat_oc.index(def_cat_oc) if def_cat_oc in opts_cat_oc else 0,
+                    format_func=lambda k: MAP_CAT_OCUPACIONAL.get(k, f"Opción {int(k)}"),
                     help=_var_help("categoria_ocupacional"),
                 )
             gc3, gc4 = st.columns(2)
             with gc3:
-                t_con = st.number_input(
-                    "Tipo de contrato (cód.)",
-                    min_value=0.0,
-                    max_value=10.0,
-                    value=float(_df_int_default(df, "tipo_contrato", 2)),
+                opts_t_con = _get_opciones(df, "tipo_contrato")
+                def_t_con = float(_df_int_default(df, "tipo_contrato", 2))
+                t_con = st.selectbox(
+                    "Tipo de contrato",
+                    options=opts_t_con,
+                    index=opts_t_con.index(def_t_con) if def_t_con in opts_t_con else 0,
+                    format_func=lambda k: MAP_TIPO_CONTRATO.get(k, f"Opción {int(k)}"),
                     help=_var_help("tipo_contrato"),
                 )
-                sec = st.number_input(
-                    "Sector laboral (cód.)",
-                    min_value=0.0,
-                    max_value=10.0,
-                    value=float(_df_int_default(df, "sector_laboral", 5)),
-                    help=_var_help("sector_laboral"),
+                opts_sec = sorted(map_sec_ui.keys()) if map_sec_ui else [1, 2, 3, 4, 5]
+                def_sec = _df_int_default(df, "sector_laboral", 5)
+                ix_sec = opts_sec.index(def_sec) if def_sec in opts_sec else 0
+                sec_cod = st.selectbox(
+                    "Sector laboral",
+                    options=opts_sec,
+                    index=ix_sec,
+                    format_func=lambda k: _etiqueta_codigo(map_sec_ui, k),
+                    help=_var_help("sector_laboral")
+                    + " El modelo recibe el código numérico (1–5), igual que en el entrenamiento.",
                 )
-                tam = st.number_input(
-                    "Tamaño de empresa (cód.)",
-                    min_value=0.0,
-                    max_value=10.0,
-                    value=float(_df_int_default(df, "tamanio_empresa", 3)),
-                    help=_var_help("tamanio_empresa"),
+                sec = float(sec_cod)
+                opts_tam = sorted(map_tam_ui.keys()) if map_tam_ui else [1, 2, 3, 4, 5]
+                def_tam = _df_int_default(df, "tamanio_empresa", 3)
+                ix_tam = opts_tam.index(def_tam) if def_tam in opts_tam else 0
+                tam_cod = st.selectbox(
+                    "Tamaño de empresa",
+                    options=opts_tam,
+                    index=ix_tam,
+                    format_func=lambda k: _etiqueta_codigo(map_tam_ui, k),
+                    help=_var_help("tamanio_empresa")
+                    + " El modelo recibe el código numérico (1–5), igual que en el entrenamiento.",
                 )
+                tam = float(tam_cod)
             with gc4:
-                tit = st.number_input(
-                    "Titulado (cód.)",
-                    min_value=0.0,
-                    max_value=5.0,
-                    value=float(_df_int_default(df, "titulado", 2)),
+                opts_tit = _get_opciones(df, "titulado")
+                def_tit = float(_df_int_default(df, "titulado", 2))
+                tit = st.selectbox(
+                    "Titulado",
+                    options=opts_tit,
+                    index=opts_tit.index(def_tit) if def_tit in opts_tit else 0,
+                    format_func=lambda k: MAP_SI_NO.get(k, f"Opción {int(k)}"),
                     help=_var_help("titulado"),
                 )
-                cm = st.number_input(
-                    "Cuadro de méritos (cód.)",
-                    min_value=0.0,
-                    max_value=5.0,
-                    value=float(_df_int_default(df, "cuadro_merito", 2)),
+                
+                opts_cm = _get_opciones(df, "cuadro_merito")
+                def_cm = float(_df_int_default(df, "cuadro_merito", 2))
+                cm = st.selectbox(
+                    "Cuadro de méritos",
+                    options=opts_cm,
+                    index=opts_cm.index(def_cm) if def_cm in opts_cm else 0,
+                    format_func=lambda k: MAP_SI_NO.get(k, f"Opción {int(k)}"),
                     help=_var_help("cuadro_merito"),
                 )
-                pg = st.number_input(
-                    "Postgrado (cód.)",
-                    min_value=0.0,
-                    max_value=5.0,
-                    value=float(_df_int_default(df, "postgrado", 2)),
+                
+                opts_pg = _get_opciones(df, "postgrado")
+                def_pg = float(_df_int_default(df, "postgrado", 2))
+                pg = st.selectbox(
+                    "Postgrado",
+                    options=opts_pg,
+                    index=opts_pg.index(def_pg) if def_pg in opts_pg else 0,
+                    format_func=lambda k: MAP_SI_NO.get(k, f"Opción {int(k)}"),
                     help=_var_help("postgrado"),
                 )
             gc5, gc6 = st.columns(2)
             with gc5:
-                idi = st.number_input(
-                    "Idioma extranjero (cód.)",
-                    min_value=0.0,
-                    max_value=10.0,
-                    value=float(_df_int_default(df, "idioma_extranjero", 2)),
+                opts_idi = _get_opciones(df, "idioma_extranjero")
+                def_idi = float(_df_int_default(df, "idioma_extranjero", 2))
+                idi = st.selectbox(
+                    "Idioma extranjero",
+                    options=opts_idi,
+                    index=opts_idi.index(def_idi) if def_idi in opts_idi else 0,
+                    format_func=lambda k: MAP_IDIOMA_EXTRANJERO.get(k, f"Nivel / Opción {int(k)}"),
                     help=_var_help("idioma_extranjero"),
                 )
-                pra = st.number_input(
-                    "Prácticas preprofesionales (cód.)",
-                    min_value=0.0,
-                    max_value=10.0,
-                    value=float(_df_int_default(df, "practicas_preprof", 1)),
+                
+                opts_pra = _get_opciones(df, "practicas_preprof")
+                def_pra = float(_df_int_default(df, "practicas_preprof", 1))
+                pra = st.selectbox(
+                    "Prácticas preprofesionales",
+                    options=opts_pra,
+                    index=opts_pra.index(def_pra) if def_pra in opts_pra else 0,
+                    format_func=lambda k: MAP_SI_NO.get(k, f"Opción {int(k)}"),
                     help=_var_help("practicas_preprof"),
                 )
             with gc6:
-                ges = st.number_input(
-                    "Gestión universidad (cód.)",
-                    min_value=0.0,
-                    max_value=10.0,
-                    value=float(_df_int_default(df, "gestion_universidad", 1)),
+                opts_ges = _get_opciones(df, "gestion_universidad")
+                def_ges = float(_df_int_default(df, "gestion_universidad", 1))
+                ges = st.selectbox(
+                    "Gestión universidad",
+                    options=opts_ges,
+                    index=opts_ges.index(def_ges) if def_ges in opts_ges else 0,
+                    format_func=lambda k: MAP_GEST_UNIV.get(k, f"Opción {int(k)}"),
                     help=_var_help("gestion_universidad"),
                 )
-                ocup_cod = st.number_input(
-                    "Ocupación principal — código",
-                    min_value=ocu_lo,
-                    max_value=ocu_hi,
-                    value=_df_int_default(df, "ocupacion_cod", ocu_lo),
-                    help=_var_help("ocupacion_cod"),
+                def_oc = _df_int_default(df, "ocupacion_cod", ocu_lo)
+                ocup_cod_str = st.text_input(
+                    "Ocupación principal",
+                    value=str(def_oc),
+                    help=_var_help("ocupacion_cod") + " (Campo de texto)",
                 )
-                act_cod = st.number_input(
-                    "Actividad económica — código",
-                    min_value=act_lo,
-                    max_value=act_hi,
-                    value=_df_int_default(df, "actividad_economica_cod", act_lo),
-                    help=_var_help("actividad_economica_cod"),
+                
+                def_act = _df_int_default(df, "actividad_economica_cod", act_lo)
+                act_cod_str = st.text_input(
+                    "Actividad económica",
+                    value=str(def_act),
+                    help=_var_help("actividad_economica_cod") + " (Campo de texto)",
                 )
-            carrera_id_val = st.number_input(
-                "Carrera — identificador (datos)",
-                min_value=car_lo,
-                max_value=car_hi,
-                value=_df_int_default(df, "carrera_id", car_lo),
-                help=_var_help("carrera_id"),
+                
+            def_car = _df_int_default(df, "carrera_id", car_lo)
+            carrera_id_str = st.text_input(
+                "Carrera",
+                value=str(def_car),
+                help=_var_help("carrera_id") + " (Campo de texto)",
             )
     
             row_dict = {
@@ -790,15 +1051,15 @@ def main():
                 "tipo_contrato": t_con,
                 "sector_laboral": sec,
                 "tamanio_empresa": tam,
-                "ocupacion_cod": float(ocup_cod),
-                "actividad_economica_cod": float(act_cod),
+                "ocupacion_cod": _safe_float(ocup_cod_str),
+                "actividad_economica_cod": _safe_float(act_cod_str),
                 "titulado": tit,
                 "cuadro_merito": cm,
                 "postgrado": pg,
                 "idioma_extranjero": idi,
                 "practicas_preprof": pra,
                 "gestion_universidad": ges,
-                "carrera_id": float(carrera_id_val),
+                "carrera_id": _safe_float(carrera_id_str),
                 dep_col_model: dep_sel,
             }
             row = _complete_prediction_row(df, feat_cols, row_dict)
@@ -806,7 +1067,7 @@ def main():
             if st.button("Predecir ingreso mensual", type="primary"):
                 Xp = _prepare_features_for_catboost(row, feat_cols)
                 pred = _decode_pred(float(pipe.predict(Xp)[0]))
-                st.success(f"**Ingreso mensual estimado:** S/ {pred:,.0f}")
+                st.success(f"**Ingreso mensual estimado:** {_fmt_soles(pred)}")
                 st.caption(
                     "La predicción es orientativa (error típico cercano al MAE mostrado). "
                     "El género entra como una variable más; no implica causalidad."
@@ -821,12 +1082,12 @@ def main():
             Xm = _prepare_features_for_catboost(row_m, feat_cols)
             Xf = _prepare_features_for_catboost(row_f, feat_cols)
             pm, pf = _decode_pred(float(pipe.predict(Xm)[0])), _decode_pred(float(pipe.predict(Xf)[0]))
-            st.write(f"Misma ficha con **Masculino**: S/ {pm:,.0f}")
-            st.write(f"Misma ficha con **Femenino**: S/ {pf:,.0f}")
+            st.write(f"Misma ficha con **Masculino**: {_fmt_soles(pm)}")
+            st.write(f"Misma ficha con **Femenino**: {_fmt_soles(pf)}")
             if pm > 0:
                 diff = (pm - pf) / pm * 100.0
                 st.info(
-                    f"Diferencia relativa del modelo entre ambas filas: **{diff:.1f} %** "
+                    f"Diferencia relativa del modelo entre ambas filas: **{round(diff, ND):.{ND}f} %** "
                     f"(asociación aprendida por el modelo, no efecto causal)."
                 )
 
