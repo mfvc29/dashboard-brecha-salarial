@@ -65,11 +65,13 @@ document.addEventListener('DOMContentLoaded', () => {
     btnPredict.addEventListener('click', () => {
       const category = document.getElementById('salary-category').value;
       const experience = document.getElementById('salary-experience').value;
+      const location = document.getElementById('salary-location').value;
+      const education = document.getElementById('salary-education').value;
       const resultContainer = document.getElementById('salary-result');
       const predictedValue = document.getElementById('predicted-value');
 
       if (!category || !experience) {
-        alert('Por favor selecciona una categoría y nivel de experiencia para la predicción.');
+        alert('Por favor selecciona obligatoriamente tu categoría y nivel de experiencia para la predicción.');
         return;
       }
 
@@ -80,18 +82,31 @@ document.addEventListener('DOMContentLoaded', () => {
         case 'data': baseSalary = 3200; break;
         case 'design': baseSalary = 2500; break;
         case 'marketing': baseSalary = 2200; break;
+        default: baseSalary = 2000;
       }
 
       let multiplier = 1;
+      // Multiplicador por experiencia
       switch (experience) {
-        case 'junior': multiplier = 1; break;
-        case 'mid': multiplier = 1.6; break;
-        case 'senior': multiplier = 2.4; break;
+        case 'junior': multiplier *= 1; break;
+        case 'mid': multiplier *= 1.6; break;
+        case 'senior': multiplier *= 2.4; break;
+      }
+      
+      // Ajuste por ubicación
+      if (location === 'provincias') {
+        multiplier *= 0.85; // Simulación brecha regional
+      }
+
+      // Ajuste por educación
+      switch (education) {
+        case 'tecnico': multiplier *= 0.9; break;
+        case 'postgrado': multiplier *= 1.3; break;
       }
 
       const finalSalary = Math.round(baseSalary * multiplier);
       
-      // Mostrar con un pequeño retraso para simular carga del modelo
+      // Mostrar con un pequeño retraso para simular carga del modelo analítico
       predictedValue.textContent = 'Calculando...';
       resultContainer.style.display = 'block';
       

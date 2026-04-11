@@ -319,42 +319,92 @@
     <section id="salary" class="page">
       <div class="ayni-hero">
         <h1>Tu Valor en el Mercado</h1>
-        <p>Conoce la estimación de salario para tu categoría y experiencia laboral.</p>
+        <p>Conoce la estimación de salario de acuerdo a tu perfil profesional y experiencia.</p>
       </div>
 
-      <div class="card" style="max-width: 600px; margin: 0 auto;">
-        <h3 class="card-title" style="color: var(--blue-dark)"><i data-lucide="trending-up"></i> Predice tu Sueldo</h3>
+      <div class="card" style="max-width: 800px; margin: 0 auto; padding: 2rem;">
+        <h3 class="card-title" style="color: var(--blue-dark); text-align: center; border-bottom: none; font-size: 1.5rem; margin-bottom: 2rem; justify-content: center;">
+          <i data-lucide="trending-up"></i> Predice tu Sueldo
+        </h3>
         
-        <div style="margin-bottom: 1rem;">
-          <label style="display:block; margin-bottom:0.5rem; font-weight:600; color:var(--gray-dark)">Categoría / Sector</label>
-          <select id="salary-category" class="filter-select" style="width: 100%; padding: 0.8rem; border-radius: var(--radius-md);">
-            <option value="">Selecciona tu área</option>
-            <option value="tech">Tecnología y Software</option>
-            <option value="data">Data y Analítica</option>
-            <option value="design">Diseño / UX UI</option>
-            <option value="marketing">Marketing Digital</option>
-          </select>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+          <div>
+            <label style="display:block; margin-bottom:0.5rem; font-weight:600; color:var(--gray-dark)">Categoría / Sector</label>
+            <select id="salary-category" class="filter-select" style="width: 100%; padding: 0.8rem; border-radius: var(--radius-md);">
+              <option value="">Selecciona tu área</option>
+              <option value="tech">Tecnología y Software</option>
+              <option value="data">Data y Analítica</option>
+              <option value="design">Diseño / UX UI</option>
+              <option value="marketing">Marketing Digital</option>
+            </select>
+          </div>
+
+          <div>
+            <label style="display:block; margin-bottom:0.5rem; font-weight:600; color:var(--gray-dark)">Años de experiencia</label>
+            <select id="salary-experience" class="filter-select" style="width: 100%; padding: 0.8rem; border-radius: var(--radius-md);">
+              <option value="">Selecciona experiencia</option>
+              <option value="junior">Junior (0 - 2 años)</option>
+              <option value="mid">Mid-Level (3 - 5 años)</option>
+              <option value="senior">Senior (5+ años)</option>
+            </select>
+          </div>
+
+          <div>
+            <label style="display:block; margin-bottom:0.5rem; font-weight:600; color:var(--gray-dark)">Ubicación</label>
+            <select id="salary-location" class="filter-select" style="width: 100%; padding: 0.8rem; border-radius: var(--radius-md);">
+              <option value="lima">Lima / Callao</option>
+              <option value="provincias">Provincias / Resto del país</option>
+            </select>
+          </div>
+
+          <div>
+            <label style="display:block; margin-bottom:0.5rem; font-weight:600; color:var(--gray-dark)">Nivel Educativo</label>
+            <select id="salary-education" class="filter-select" style="width: 100%; padding: 0.8rem; border-radius: var(--radius-md);">
+              <option value="universitario">Universitario / Bachiller</option>
+              <option value="tecnico">Técnico</option>
+              <option value="postgrado">Postgrado / Maestría</option>
+            </select>
+          </div>
         </div>
 
-        <div style="margin-bottom: 1.5rem;">
-          <label style="display:block; margin-bottom:0.5rem; font-weight:600; color:var(--gray-dark)">Años de experiencia</label>
-          <select id="salary-experience" class="filter-select" style="width: 100%; padding: 0.8rem; border-radius: var(--radius-md);">
-            <option value="">Selecciona experiencia</option>
-            <option value="junior">Junior (0 - 2 años)</option>
-            <option value="mid">Mid-Level (3 - 5 años)</option>
-            <option value="senior">Senior (5+ años)</option>
-          </select>
-        </div>
-
-        <button id="btn-predict" class="btn btn-primary" style="width: 100%;">
-          <i data-lucide="calculator" width="18"></i> Calcular Estimación
+        <button id="btn-predict" class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1.1rem;">
+          <i data-lucide="calculator" width="20"></i> Calcular Estimación
         </button>
 
         <!-- Contenedor del resultado oculto inicialmente -->
-        <div id="salary-result" style="display: none; margin-top: 2rem; text-align: center; padding: 1.5rem; background: var(--bg-gray); border-radius: var(--radius-md); border: 2px dashed var(--purple-light);">
-          <div style="color: var(--gray-dark); font-size: 0.9rem; margin-bottom: 0.5rem;">Sueldo promedio estimado:</div>
-          <div id="predicted-value" style="font-size: 2.5rem; font-weight: 700; color: var(--purple-strong); margin-bottom: 0.5rem;">S/ 0</div>
-          <div style="font-size: 0.85rem; color: var(--gray-medium);">*Basado en datos de mercado de mujeres en Perú.</div>
+        <div id="salary-result" style="display: none; margin-top: 2rem; text-align: center; padding: 2rem; background: var(--bg-gray); border-radius: var(--radius-md); border: 2px dashed var(--purple-strong);">
+          <div style="color: var(--gray-dark); font-size: 1rem; margin-bottom: 0.5rem; font-weight: 500;">Sueldo promedio estimado:</div>
+          <div id="predicted-value" style="font-size: 3rem; font-weight: 800; color: var(--purple-strong); margin-bottom: 0.5rem;">S/ 0</div>
+          <div style="font-size: 0.85rem; color: var(--gray-medium);">*Estimación inicial basada en las encuestas vigentes.</div>
+        </div>
+      </div>
+
+      <!-- Roadmap / Gantt -->
+      <div class="card" style="max-width: 800px; margin: 3rem auto 0; padding: 2rem; border-top: 5px solid var(--purple-light);">
+        <h3 class="card-title" style="color: var(--blue-dark); border-bottom: none; font-size: 1.3rem; margin-bottom: 0.5rem;">
+          <i data-lucide="calendar-clock"></i> Roadmap Tecnológico y Ayni
+        </h3>
+        <p style="color: var(--gray-dark); font-size: 0.95rem; margin-bottom: 2rem;">Evolución planeada para mejorar la precisión y eficiencia de las predicciones salariales, nutriéndose de la propia comunidad.</p>
+        
+        <div class="gantt-container">
+          <div class="gantt-row">
+            <div class="gantt-label"><strong>Fase 1 (Corto Plazo)</strong><br><span style="font-size:0.8rem; font-weight:normal; color:var(--gray-medium)">Estimaciones Base</span></div>
+            <div class="gantt-track">
+              <div class="gantt-bar phase-1" style="width: 35%;">Mes 1-2: Modelo basal / Prototipo (Actual)</div>
+            </div>
+          </div>
+          <div class="gantt-row">
+            <div class="gantt-label"><strong>Fase 2 (Mediano Plazo)</strong><br><span style="font-size:0.8rem; font-weight:normal; color:var(--gray-medium)">Feedback de Red</span></div>
+            <div class="gantt-track">
+              <div class="gantt-bar phase-2" style="width: 35%; margin-left: 30%;">Mes 3-4: Recopilar data real anonimizada</div>
+            </div>
+          </div>
+          <div class="gantt-row">
+            <div class="gantt-label"><strong>Fase 3 (Largo Plazo)</strong><br><span style="font-size:0.8rem; font-weight:normal; color:var(--gray-medium)">ML Eficiente</span></div>
+            <div class="gantt-track">
+              <div class="gantt-bar phase-3" style="width: 45%; margin-left: 55%;" title="Mes 5-6: Levantar la nueva data validada para reentrenar el modelo (Aumento dinámico y mayor eficiencia)">Mes 5+: Levantar nueva data y reentrenar modelo garantizando eficiencia</div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
