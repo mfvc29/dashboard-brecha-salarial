@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ayni Warmi</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <!-- Navegación -->
+  <nav class="navbar">
+    <div class="nav-brand">
+      <i data-lucide="flower-2"></i>
+      Ayni Warmi
+    </div>
+    <div class="nav-links">
+      <a href="#" class="nav-link active" data-target="home">
+        <i data-lucide="home"></i> Inicio
+      </a>
+      <a href="#" class="nav-link" data-target="feed">
+        <i data-lucide="users"></i> Comunidad
+      </a>
+      <a href="#" class="nav-link" data-target="jobs">
+        <i data-lucide="briefcase"></i> Empleos
+      </a>
+      <a href="#" class="nav-link" data-target="ayni">
+        <i data-lucide="heart-handshake"></i> Red Ayni
+      </a>
+      <a href="#" class="nav-link" data-target="salary">
+        <i data-lucide="calculator"></i> Calculadora
+      </a>
+    </div>
+    <div class="user-profile-mini">
+      <a href="#" class="nav-link" data-target="profile">
+        <img src="https://ui-avatars.com/api/?name=Ana+Perez&background=CBB6E6&color=6C3FD1" alt="Perfil" class="avatar-mini">
+        Mi Perfil
+      </a>
+    </div>
+  </nav>
+
+  <!-- Contenedor Principal (SPA Layout) -->
+  <main class="container">
+    
+    <!-- PANTALLA: LANDING PAGE -->
+    <section id="home" class="page active">
+      <div class="hero">
+        <div class="hero-text">
+          <h1>Conectamos mujeres con oportunidades reales</h1>
+          <p>Únete a la plataforma de inserción laboral basada en la colaboración. Encuentra tu próximo empleo, comparte tus logros y apoya a otras profesionales en Perú.</p>
+          <div class="hero-actions">
+            <button class="btn btn-primary nav-link" data-target="profile">Crear mi perfil</button>
+            <button class="btn btn-outline nav-link" data-target="jobs">Explorar empleos</button>
+          </div>
+        </div>
+        <div class="hero-img">
+          <!-- Placeholder amable para hero -->
+          <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=600&h=400" alt="Mujeres profesionales">
+        </div>
+      </div>
+
+      <div class="benefits">
+        <div class="benefit-card">
+          <i data-lucide="target" width="32" height="32"></i>
+          <h3>Oportunidades a tu medida</h3>
+          <p>Filtros por sector y modalidad que se adaptan a tu perfil.</p>
+        </div>
+        <div class="benefit-card">
+          <i data-lucide="users-2" width="32" height="32"></i>
+          <h3>Red de apoyo mutuo</h3>
+          <p>Encuentra mentoras y da visibilidad a tus compañeras.</p>
+        </div>
+        <div class="benefit-card">
+          <i data-lucide="award" width="32" height="32"></i>
+          <h3>Visibilidad de tu esfuerzo</h3>
+          <p>Destaca tus logros en un entorno profesional y amigable.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANTALLA: PERFIL -->
+    <section id="profile" class="page">
+      <div class="profile-header">
+        <img src="https://ui-avatars.com/api/?name=Ana+Perez&background=BDBDBD&color=fff&size=200" alt="Ana Perez" class="profile-avatar">
+        <h2 class="profile-name">Ana Perez</h2>
+        <p class="profile-role">Ingeniera de Software | Apasionada por la tecnología</p>
+        <div class="profile-location">
+          <i data-lucide="map-pin" width="16"></i> Lima, Perú
+        </div>
+        <button class="btn btn-primary"><i data-lucide="star"></i> Apoyar a Ana</button>
+      </div>
+
+      <div class="progress-container">
+        <div class="progress-header">
+          <span>Crecimiento profesional</span>
+          <span>Nivel 4</span>
+        </div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title"><i data-lucide="briefcase"></i> Experiencia Laboral</h3>
+        <div class="experience-item">
+          <h4>Desarrolladora Frontend Senior</h4>
+          <p>TechCorp - Remoto (Ene 2022 - Presente)</p>
+        </div>
+        <div class="experience-item">
+          <h4>Analista QA</h4>
+          <p>Soluciones Digitales - Lima (Mar 2019 - Dic 2021)</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title"><i data-lucide="award"></i> Logros</h3>
+        <div class="badges-container">
+          <div class="badge">
+            <i data-lucide="zap" width="24"></i>
+            <span>Resolutiva</span>
+          </div>
+          <div class="badge">
+            <i data-lucide="users" width="24"></i>
+            <span>Líder de equipo</span>
+          </div>
+          <div class="badge">
+            <i data-lucide="heart" width="24"></i>
+            <span>Ayni Activo</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANTALLA: FEED (COMUNIDAD) -->
+    <section id="feed" class="page">
+      <div class="feed-layout">
+        <div class="feed-main">
+          <div class="card post-create">
+            <textarea class="post-input" placeholder="Comparte un logro profesional o busca ayuda (Ayni)..."></textarea>
+            <div class="post-actions">
+              <button class="btn btn-primary"><i data-lucide="send" width="16"></i> Publicar</button>
+            </div>
+          </div>
+
+          <div class="card post-card">
+            <div class="post-header">
+              <img src="https://ui-avatars.com/api/?name=Carla+G&background=edd2ff" alt="User">
+              <div>
+                <div class="post-author">Carla Gómez</div>
+                <div class="post-time">Hace 2 horas • Logro 🎉</div>
+              </div>
+            </div>
+            <div class="post-content">
+              ¡Por fin puedo contarles! Hoy he firmado mi contrato como Data Analyst junior. Gracias a esta red por la asesoría y las simulaciones de entrevista que me ayudaron tanto. ¡El ayni funciona!
+            </div>
+            <div class="post-footer">
+              <button class="post-action"><i data-lucide="thumbs-up"></i> Apoyar (24)</button>
+              <button class="post-action"><i data-lucide="message-square"></i> Comentar</button>
+            </div>
+          </div>
+          
+          <div class="card post-card">
+            <div class="post-header">
+              <img src="https://ui-avatars.com/api/?name=Laura+M&background=cdebcb" alt="User">
+              <div>
+                <div class="post-author">Laura Mamani</div>
+                <div class="post-time">Hace 5 horas • Ofrece Mentoría 🤝</div>
+              </div>
+            </div>
+            <div class="post-content">
+              Tengo espacio para 2 sesiones de mentoría en diseño UI/UX este fin de semana. Si eres junior y quieres feedback de tu portafolio, déjame un comentario.
+            </div>
+            <div class="post-footer">
+              <button class="post-action"><i data-lucide="thumbs-up"></i> Apoyar (15)</button>
+              <button class="post-action"><i data-lucide="message-square"></i> Comentar (4)</button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="feed-sidebar">
+          <div class="card">
+            <h3 class="card-title">Mujeres Destacadas</h3>
+            <p style="color: var(--gray-medium); font-size: 0.9rem; margin-bottom: 1rem;">Perfiles que más han aportado esta semana en la red.</p>
+            <div style="display: flex; flex-direction:column; gap: 10px;">
+              <div style="display:flex; align-items:center; gap: 10px;">
+                <img src="https://ui-avatars.com/api/?name=S+T" style="width:32px; border-radius:50%;">
+                <span style="font-size:0.9rem; font-weight:600;">Sofia Torres</span>
+              </div>
+              <div style="display:flex; align-items:center; gap: 10px;">
+                <img src="https://ui-avatars.com/api/?name=M+R" style="width:32px; border-radius:50%;">
+                <span style="font-size:0.9rem; font-weight:600;">María Ruiz</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANTALLA: EMPLEOS -->
+    <section id="jobs" class="page">
+      <div class="filters">
+        <select class="filter-select">
+          <option>Ubicación: Todo Perú</option>
+          <option>Lima</option>
+          <option>Arequipa</option>
+          <option>Trujillo</option>
+        </select>
+        <select class="filter-select">
+          <option>Sector: Todos</option>
+          <option>Tecnología</option>
+          <option>Finanzas</option>
+          <option>Educación</option>
+        </select>
+        <select class="filter-select">
+          <option>Modalidad: Cualquiera</option>
+          <option>Remoto</option>
+          <option>Híbrido</option>
+          <option>Presencial</option>
+        </select>
+      </div>
+
+      <div class="jobs-grid">
+        <div class="card job-card">
+          <div class="job-header">
+            <div>
+              <div class="job-title">Product Manager Junior</div>
+              <div class="job-company">Fintech Andina</div>
+            </div>
+            <i data-lucide="bookmark" style="color: var(--gray-light)"></i>
+          </div>
+          <div class="job-tags">
+            <span class="job-tag"><i data-lucide="map-pin" width="12"></i> Lima</span>
+            <span class="job-tag"><i data-lucide="laptop" width="12"></i> Híbrido</span>
+          </div>
+          <p style="color:var(--gray-dark); font-size:0.9rem; margin-bottom:1rem;">Buscamos talento para gestionar el ciclo de vida de nuevos productos de inclusión financiera...</p>
+          <button class="btn btn-secondary" style="width:100%">Postular</button>
+        </div>
+
+        <div class="card job-card">
+          <div class="job-header">
+            <div>
+              <div class="job-title">Desarrolladora Backend</div>
+              <div class="job-company">TechSolutions SA</div>
+            </div>
+            <i data-lucide="bookmark" style="color: var(--gray-light)"></i>
+          </div>
+          <div class="job-tags">
+            <span class="job-tag"><i data-lucide="map-pin" width="12"></i> Todo el país</span>
+            <span class="job-tag"><i data-lucide="laptop" width="12"></i> Remoto</span>
+          </div>
+          <p style="color:var(--gray-dark); font-size:0.9rem; margin-bottom:1rem;">Únete a nuestro equipo distribuido y programo microservicios en Node.js y Python...</p>
+          <button class="btn btn-secondary" style="width:100%">Postular</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANTALLA: AYNI (RED DE APOYO) -->
+    <section id="ayni" class="page">
+      <div class="ayni-hero">
+        <h1>Red de Apoyo Ayni</h1>
+        <p>Hoy por ti, mañana por mí. Conecta y crece en comunidad.</p>
+      </div>
+
+      <div class="ayni-grid">
+        <div class="card ayni-section">
+          <h3 class="card-title" style="color: var(--purple-strong)"><i data-lucide="hand-heart"></i> Ofrecer Ayuda</h3>
+          <p style="color:var(--gray-dark); margin-bottom:1.5rem; font-size:0.9rem;">
+            Usuarias buscando mentores o consejos.
+          </p>
+          <div class="ayni-list">
+            <div class="ayni-card">
+              <div class="ayni-card-info">
+                <img src="https://ui-avatars.com/api/?name=P" alt="User">
+                <div>
+                  <div style="font-weight:600">Revisión de CV</div>
+                  <div style="font-size:0.8rem; color:var(--gray-medium)">Por Paola V.</div>
+                </div>
+              </div>
+              <button class="btn btn-outline" style="padding:0.4rem 0.8rem; font-size:0.8rem">Ayudar</button>
+            </div>
+            <div class="ayni-card">
+              <div class="ayni-card-info">
+                <img src="https://ui-avatars.com/api/?name=D" alt="User">
+                <div>
+                  <div style="font-weight:600">Guía en Entrevistas Técnicas</div>
+                  <div style="font-size:0.8rem; color:var(--gray-medium)">Por Diana C.</div>
+                </div>
+              </div>
+              <button class="btn btn-outline" style="padding:0.4rem 0.8rem; font-size:0.8rem">Ayudar</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card ayni-section">
+          <h3 class="card-title" style="color: var(--blue-dark)"><i data-lucide="megaphone"></i> Pedir Ayuda</h3>
+          <p style="color:var(--gray-dark); margin-bottom:1.5rem; font-size:0.9rem;">
+            Usuarias ofreciendo su tiempo para guiar.
+          </p>
+          <div class="ayni-list">
+             <div class="ayni-card">
+              <div class="ayni-card-info">
+                <img src="https://ui-avatars.com/api/?name=E" alt="User">
+                <div>
+                  <div style="font-weight:600">Mentoría Liderazgo</div>
+                  <div style="font-size:0.8rem; color:var(--gray-medium)">Ofrecido por Elena M.</div>
+                </div>
+              </div>
+              <button class="btn btn-primary" style="padding:0.4rem 0.8rem; font-size:0.8rem">Conectar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANTALLA: CALCULADORA DE SUELDO -->
+    <section id="salary" class="page">
+      <div class="ayni-hero">
+        <h1>Tu Valor en el Mercado</h1>
+        <p>Conoce la estimación de salario para tu categoría y experiencia laboral.</p>
+      </div>
+
+      <div class="card" style="max-width: 600px; margin: 0 auto;">
+        <h3 class="card-title" style="color: var(--blue-dark)"><i data-lucide="trending-up"></i> Predice tu Sueldo</h3>
+        
+        <div style="margin-bottom: 1rem;">
+          <label style="display:block; margin-bottom:0.5rem; font-weight:600; color:var(--gray-dark)">Categoría / Sector</label>
+          <select id="salary-category" class="filter-select" style="width: 100%; padding: 0.8rem; border-radius: var(--radius-md);">
+            <option value="">Selecciona tu área</option>
+            <option value="tech">Tecnología y Software</option>
+            <option value="data">Data y Analítica</option>
+            <option value="design">Diseño / UX UI</option>
+            <option value="marketing">Marketing Digital</option>
+          </select>
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+          <label style="display:block; margin-bottom:0.5rem; font-weight:600; color:var(--gray-dark)">Años de experiencia</label>
+          <select id="salary-experience" class="filter-select" style="width: 100%; padding: 0.8rem; border-radius: var(--radius-md);">
+            <option value="">Selecciona experiencia</option>
+            <option value="junior">Junior (0 - 2 años)</option>
+            <option value="mid">Mid-Level (3 - 5 años)</option>
+            <option value="senior">Senior (5+ años)</option>
+          </select>
+        </div>
+
+        <button id="btn-predict" class="btn btn-primary" style="width: 100%;">
+          <i data-lucide="calculator" width="18"></i> Calcular Estimación
+        </button>
+
+        <!-- Contenedor del resultado oculto inicialmente -->
+        <div id="salary-result" style="display: none; margin-top: 2rem; text-align: center; padding: 1.5rem; background: var(--bg-gray); border-radius: var(--radius-md); border: 2px dashed var(--purple-light);">
+          <div style="color: var(--gray-dark); font-size: 0.9rem; margin-bottom: 0.5rem;">Sueldo promedio estimado:</div>
+          <div id="predicted-value" style="font-size: 2.5rem; font-weight: 700; color: var(--purple-strong); margin-bottom: 0.5rem;">S/ 0</div>
+          <div style="font-size: 0.85rem; color: var(--gray-medium);">*Basado en datos de mercado de mujeres en Perú.</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
