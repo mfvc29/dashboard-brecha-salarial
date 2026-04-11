@@ -79,6 +79,30 @@
           <p>Destaca tus logros en un entorno profesional y amigable.</p>
         </div>
       </div>
+
+      <div style="margin-top: 4rem; margin-bottom: 2rem;">
+        <h2 style="text-align: center; color: var(--blue-dark); margin-bottom: 2rem;">Historias de mujeres que crecen juntas</h2>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;">
+          <div class="card" style="text-align: center;">
+            <img src="https://ui-avatars.com/api/?name=Maria+G&background=edd2ff" alt="María González" style="width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 1rem;">
+            <h4 style="color: var(--blue-dark); margin-bottom: 0.25rem;">María González</h4>
+            <div style="color: var(--purple-strong); font-size: 0.85rem; font-weight: 500; margin-bottom: 1rem;">Desarrolladora de Software</div>
+            <p style="color: var(--gray-dark); font-size: 0.95rem; font-style: italic;">"Gracias a Ayni Warmi encontré mi primer trabajo en tech. La red de mentoras fue clave."</p>
+          </div>
+          <div class="card" style="text-align: center;">
+            <img src="https://ui-avatars.com/api/?name=Ana+F&background=cdebcb" alt="Ana Flores" style="width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 1rem;">
+            <h4 style="color: var(--blue-dark); margin-bottom: 0.25rem;">Ana Flores</h4>
+            <div style="color: var(--purple-strong); font-size: 0.85rem; font-weight: 500; margin-bottom: 1rem;">Gerente de Marketing</div>
+            <p style="color: var(--gray-dark); font-size: 0.95rem; font-style: italic;">"La comunidad es increíble. He recibido y dado mentoría a otras mujeres profesionales."</p>
+          </div>
+          <div class="card" style="text-align: center;">
+            <img src="https://ui-avatars.com/api/?name=Lucia+T&background=ffecb3" alt="Lucía Torres" style="width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 1rem;">
+            <h4 style="color: var(--blue-dark); margin-bottom: 0.25rem;">Lucía Torres</h4>
+            <div style="color: var(--purple-strong); font-size: 0.85rem; font-weight: 500; margin-bottom: 1rem;">Diseñadora UX</div>
+            <p style="color: var(--gray-dark); font-size: 0.95rem; font-style: italic;">"Ayni Warmi me ayudó a transicionar de carrera. El apoyo mutuo es real."</p>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- PANTALLA: PERFIL -->
@@ -257,64 +281,145 @@
       </div>
     </section>
 
-    <!-- PANTALLA: AYNI (RED DE APOYO) -->
-    <section id="ayni" class="page">
-      <div class="ayni-hero">
-        <h1>Red de Apoyo Ayni</h1>
-        <p>Hoy por ti, mañana por mí. Conecta y crece en comunidad.</p>
-      </div>
+<!-- PANTALLA: AYNI (RED DE APOYO) -->
+<section id="ayni" class="page">
+  
+  <!-- HERO -->
+  <div class="ayni-hero">
+    <h1>Red de Apoyo Ayni</h1>
+    <p>El concepto andino del ayni: dar y recibir ayuda mutua. Aquí las mujeres se apoyan, mentorizan y crecen juntas profesionalmente.</p>
+  </div>
 
-      <div class="ayni-grid">
-        <div class="card ayni-section">
-          <h3 class="card-title" style="color: var(--purple-strong)"><i data-lucide="hand-heart"></i> Ofrecer Ayuda</h3>
-          <p style="color:var(--gray-dark); margin-bottom:1.5rem; font-size:0.9rem;">
-            Usuarias buscando mentores o consejos.
-          </p>
-          <div class="ayni-list">
-            <div class="ayni-card">
-              <div class="ayni-card-info">
-                <img src="https://ui-avatars.com/api/?name=P" alt="User">
-                <div>
-                  <div style="font-weight:600">Revisión de CV</div>
-                  <div style="font-size:0.8rem; color:var(--gray-medium)">Por Paola V.</div>
-                </div>
-              </div>
-              <button class="btn btn-outline" style="padding:0.4rem 0.8rem; font-size:0.8rem">Ayudar</button>
-            </div>
-            <div class="ayni-card">
-              <div class="ayni-card-info">
-                <img src="https://ui-avatars.com/api/?name=D" alt="User">
-                <div>
-                  <div style="font-weight:600">Guía en Entrevistas Técnicas</div>
-                  <div style="font-size:0.8rem; color:var(--gray-medium)">Por Diana C.</div>
-                </div>
-              </div>
-              <button class="btn btn-outline" style="padding:0.4rem 0.8rem; font-size:0.8rem">Ayudar</button>
-            </div>
+  <!-- STATS -->
+  <div class="benefits" style="margin-bottom: 2rem;">
+    <div class="benefit-card">
+      <h2>1,247</h2>
+      <p>Mujeres conectadas</p>
+    </div>
+    <div class="benefit-card">
+      <h2>856</h2>
+      <p>Mentorías activas</p>
+    </div>
+    <div class="benefit-card">
+      <h2>2,341</h2>
+      <p>Apoyos brindados</p>
+    </div>
+    <div class="benefit-card">
+      <h2>94%</h2>
+      <p>Satisfacción</p>
+    </div>
+  </div>
+
+  <!-- GRID PRINCIPAL -->
+  <div class="ayni-grid">
+
+    <!-- PEDIR AYUDA -->
+    <div class="card ayni-section">
+      <h3 class="card-title"><i data-lucide="megaphone"></i> Pedir ayuda</h3>
+      <p style="color:var(--gray-dark); margin-bottom:1rem;">
+        ¿Necesitas orientación, consejo o mentoría? La comunidad está aquí para apoyarte.
+      </p>
+      <button class="btn btn-primary" style="margin-bottom:1.5rem;">Pedir ayuda</button>
+
+      <h4 style="margin-bottom:1rem;">Solicitudes recientes</h4>
+
+      <div class="ayni-list">
+        <div class="ayni-card">
+          <div>
+            <strong>Claudia Ramos</strong><br>
+            <span style="font-size:0.85rem;">Entrevistas</span>
+            <p style="font-size:0.85rem;">Necesito ayuda para prepararme para una entrevista en tech</p>
+            <span style="font-size:0.8rem; color:gray;">8 respuestas</span>
           </div>
         </div>
 
-        <div class="card ayni-section">
-          <h3 class="card-title" style="color: var(--blue-dark)"><i data-lucide="megaphone"></i> Pedir Ayuda</h3>
-          <p style="color:var(--gray-dark); margin-bottom:1.5rem; font-size:0.9rem;">
-            Usuarias ofreciendo su tiempo para guiar.
-          </p>
-          <div class="ayni-list">
-             <div class="ayni-card">
-              <div class="ayni-card-info">
-                <img src="https://ui-avatars.com/api/?name=E" alt="User">
-                <div>
-                  <div style="font-weight:600">Mentoría Liderazgo</div>
-                  <div style="font-size:0.8rem; color:var(--gray-medium)">Ofrecido por Elena M.</div>
-                </div>
-              </div>
-              <button class="btn btn-primary" style="padding:0.4rem 0.8rem; font-size:0.8rem">Conectar</button>
-            </div>
+        <div class="ayni-card">
+          <div>
+            <strong>Sofía Pérez</strong><br>
+            <span style="font-size:0.85rem;">Carrera</span>
+            <p style="font-size:0.85rem;">¿Alguien tiene experiencia negociando salarios en startups?</p>
+            <span style="font-size:0.8rem; color:gray;">12 respuestas</span>
+          </div>
+        </div>
+
+        <div class="ayni-card">
+          <div>
+            <strong>Valeria Luna</strong><br>
+            <span style="font-size:0.85rem;">Mentoría</span>
+            <p style="font-size:0.85rem;">Buscando mentora en desarrollo de producto digital</p>
+            <span style="font-size:0.8rem; color:gray;">5 respuestas</span>
           </div>
         </div>
       </div>
-    </section>
+    </div>
 
+    <!-- OFRECER MENTORÍA -->
+    <div class="card ayni-section">
+      <h3 class="card-title"><i data-lucide="hand-heart"></i> Ofrecer mentoría</h3>
+      <p style="color:var(--gray-dark); margin-bottom:1rem;">
+        Comparte tu experiencia y ayuda a otras mujeres en su desarrollo profesional.
+      </p>
+      <button class="btn btn-outline" style="margin-bottom:1.5rem;">Ser mentora</button>
+
+      <h4 style="margin-bottom:1rem;">Mentoras disponibles</h4>
+
+      <div class="ayni-list">
+        <div class="ayni-card">
+          <div>
+            <strong>Ana Flores</strong><br>
+            <span style="font-size:0.85rem;">Marketing Digital & Growth</span><br>
+            <span style="font-size:0.8rem;">8 años experiencia • 12 mentees</span>
+          </div>
+          <button class="btn btn-primary" style="font-size:0.8rem;">Solicitar</button>
+        </div>
+
+        <div class="ayni-card">
+          <div>
+            <strong>María González</strong><br>
+            <span style="font-size:0.85rem;">Desarrollo de Software</span><br>
+            <span style="font-size:0.8rem;">6 años experiencia • 8 mentees</span>
+          </div>
+          <button class="btn btn-primary" style="font-size:0.8rem;">Solicitar</button>
+        </div>
+
+        <div class="ayni-card">
+          <div>
+            <strong>Lucía Torres</strong><br>
+            <span style="font-size:0.85rem;">Diseño UX & Producto</span><br>
+            <span style="font-size:0.8rem;">5 años experiencia • 10 mentees</span>
+          </div>
+          <button class="btn btn-primary" style="font-size:0.8rem;">Solicitar</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- HISTORIAS -->
+  <div class="card" style="margin-top:2rem;">
+    <h3 class="card-title"><i data-lucide="book-open"></i> Historias de Ayni</h3>
+
+    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:1rem;">
+      
+      <div>
+        <h4>De mentee a mentora</h4>
+        <p style="font-size:0.9rem;">Carmen empezó pidiendo ayuda en UX. Hoy mentoriza a 5 mujeres en diseño de producto.</p>
+      </div>
+
+      <div>
+        <h4>Cambio de carrera exitoso</h4>
+        <p style="font-size:0.9rem;">Rosa transitó de administración a tech gracias a la mentoría y apoyo de la comunidad.</p>
+      </div>
+
+      <div>
+        <h4>Red que transforma</h4>
+        <p style="font-size:0.9rem;">150+ mujeres han conseguido trabajo gracias a recomendaciones dentro de la red Ayni.</p>
+      </div>
+
+    </div>
+  </div>
+
+</section>
     <!-- PANTALLA: CALCULADORA DE SUELDO -->
     <section id="salary" class="page">
       <div class="ayni-hero">
