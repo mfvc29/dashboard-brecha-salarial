@@ -1240,11 +1240,31 @@ def main():
         st.warning("💡 **Recomendación basada en datos:** Para escalar económicamente de forma equitativa, la evidencia sugiere que profesionalizarse con un título, participar activamente del networking sectorial y buscar mentoría tecnológica genera saltos cualitativos muy fuertes en ingresos, que *Ayni Warmi* facilitaría digitalmente.")
 
         st.divider()
-        st.subheader("Prototipo Interactivo")
+        st.subheader("Plataforma Interactiva Ayni Warmi")
         st.markdown(
-            "Navega libremente por nuestros flujos de diseño interactivos para experimentar el modelo de Ayni Warmi:"
+            "Navega libremente por nuestra plataforma web 100% funcional integrada directamente aquí:"
         )
-        st.link_button("Abrir Prototipo Interactivo en Figma 🎨", "https://www.figma.com/make/Y6keHcSTgEMFADPkSKa3oq/Ayni-Warmi-platform-design?p=f&t=CZfardXgARrCwqub-0", type="primary")
+        
+        try:
+            with open(BASE / "WEB" / "styles.css", "r", encoding="utf-8") as f:
+                css_content = f.read()
+            with open(BASE / "WEB" / "app.js", "r", encoding="utf-8") as f:
+                js_content = f.read()
+            with open(BASE / "WEB" / "index.html", "r", encoding="utf-8") as f:
+                html_content = f.read()
+                
+            html_content = html_content.replace(
+                '<link rel="stylesheet" href="styles.css">', 
+                f"<style>\n{css_content}\n</style>"
+            ).replace(
+                '<script src="app.js"></script>',
+                f"<script>\n{js_content}\n</script>"
+            )
+            
+            st.components.v1.html(html_content, height=800, scrolling=True)
+            
+        except Exception as e:
+            st.error(f"Error al cargar el prototipo web: {e}")
 
 if __name__ == "__main__":
     main()
