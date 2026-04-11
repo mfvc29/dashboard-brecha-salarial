@@ -1240,9 +1240,9 @@ def main():
         st.warning("💡 **Recomendación basada en datos:** Para escalar económicamente de forma equitativa, la evidencia sugiere que profesionalizarse con un título, participar activamente del networking sectorial y buscar mentoría tecnológica genera saltos cualitativos muy fuertes en ingresos, que *Ayni Warmi* facilitaría digitalmente.")
 
         st.divider()
-        st.subheader("Plataforma Interactiva Ayni Warmi")
+        st.subheader("Mockup Interactivo: Ayni Warmi")
         st.markdown(
-            "Navega libremente por nuestra plataforma web 100% funcional integrada directamente aquí:"
+            "Navega libremente por este bosquejo funcional (mockup) integrado directamente aquí para visualizar el concepto de la plataforma:"
         )
         
         try:
