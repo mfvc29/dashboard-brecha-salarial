@@ -488,6 +488,11 @@ def main():
             "**Fuente:** [ENCUESTA DE EGRESADOS UNIVERSITARIOS y universidades 2014]"
             "(https://proyectos.inei.gob.pe/microdatos/) - INEI."
         )
+        st.info(
+            "📌 **Contexto Demográfico Clave:** El 100% de los individuos en este conjunto de datos "
+            "tienen **30 años o menos**. Esto significa que la brecha salarial que explora este panel "
+            "evidencia inequidades sistémicas en etapas tempranas de la vida profesional."
+        )
         st.divider()
         _render_variable_glossary()
 
