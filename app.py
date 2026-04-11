@@ -496,17 +496,7 @@ def main():
         st.divider()
         _render_variable_glossary()
 
-    with st.expander("💡 Datos para tomar acción", expanded=False):
-        st.markdown(
-            "Este dashboard demuestra mediante análisis descriptivo e Inteligencia Artificial que la brecha salarial "
-            "de género **no es casual, sino sistemáticamente estructural**. Como podrás interactuar en las siguientes pestañas, "
-            "incluso manteniendo constantes características equivalentes en un perfil, el género sigue influyendo en los "
-            "ingresos ofertados por el mercado de contratación inicial.\n\n"
-            "Frente a este obstáculo invisible, no basta con diagnosticar. Te invitamos a conocer **Ayni Warmi** "
-            "(en la pestaña *Solución Estratégica*): una plataforma realista y escalable que entrelaza empleabilidad, "
-            "comunidad y tecnología para conectar el talento femenino con verdaderas oportunidades bajo el principio "
-            "del *ayni* (apoyo mutuo)."
-        )
+    st.subheader("Datos para tomar acción")
 
     df = load_data()
 
